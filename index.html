@@ -14,6 +14,7 @@
       --line: #dfe4dd; --accent: #1f7a4d; --accent-soft: #e2f0e7;
       --wa: #25d366; --wa-text: #0b3d22;
       --veg: #2e8b57; --egg: #a87500; --nonveg: #b8412c;
+      --ok: #1f7a4d; --near: #a87500; --low: #b8412c; --salad: #f3f9f2;
       --font-display: "Bricolage Grotesque", system-ui, sans-serif;
       --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     }
@@ -21,13 +22,15 @@
       :root:not([data-theme="light"]) {
         --bg: #131714; --card: #1c211d; --text: #e9ede9; --muted: #9ea69f;
         --line: #2f3630; --accent: #5cc48e; --accent-soft: #213428;
-        --veg: #5cc48e; --egg: #e0b040; --nonveg: #ef7a62; color-scheme: dark;
+        --veg: #5cc48e; --egg: #e0b040; --nonveg: #ef7a62;
+        --ok: #5cc48e; --near: #e0b040; --low: #ef7a62; --salad: #1a251d; color-scheme: dark;
       }
     }
     :root[data-theme="dark"] {
       --bg: #131714; --card: #1c211d; --text: #e9ede9; --muted: #9ea69f;
       --line: #2f3630; --accent: #5cc48e; --accent-soft: #213428;
-      --veg: #5cc48e; --egg: #e0b040; --nonveg: #ef7a62; color-scheme: dark;
+      --veg: #5cc48e; --egg: #e0b040; --nonveg: #ef7a62;
+        --ok: #5cc48e; --near: #e0b040; --low: #ef7a62; --salad: #1a251d; color-scheme: dark;
     }
     * { box-sizing: border-box; }
     body {
@@ -83,6 +86,31 @@
     summary { cursor: pointer; color: var(--accent); font-size: .9rem; }
     ul.ing { margin: 8px 0 0; padding-left: 20px; color: var(--muted); font-size: .9rem; }
 
+    .controls + .controls { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+    .group-title { grid-column: 1 / -1; font-size: .8rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+    label.check { flex-direction: row; align-items: center; gap: 8px; color: var(--text); font-size: .9rem; }
+    label.check input { width: 20px; height: 20px; min-height: 0; accent-color: var(--accent); }
+
+    #targets { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
+    .target-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; column-gap: 6px; }
+    .target-label { font-size: .8rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+    .target-value { font-variant-numeric: tabular-nums; font-size: .85rem; color: var(--muted); white-space: nowrap; }
+    .target-value strong { font-family: var(--font-display); font-size: 1.35rem; color: var(--text); }
+    .bar { height: 8px; background: var(--line); border-radius: 999px; overflow: hidden; margin: 6px 0 4px; }
+    .bar span { display: block; height: 100%; border-radius: inherit; background: var(--ok); }
+    .target.near .bar span { background: var(--near); }
+    .target.low .bar span { background: var(--low); }
+    .target-status { font-size: .8rem; font-weight: 600; color: var(--ok); }
+    .target.near .target-status { color: var(--near); }
+    .target.low .target-status { color: var(--low); }
+    #fat-sources { margin-top: 12px; }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: -4px 0 12px; }
+    .chip { font-size: .8rem; padding: 3px 9px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+    .chip b { font-weight: 700; }
+    .chip.muted { color: var(--muted); }
+    .meal.is-salad { background: var(--salad); }
+
     #list h4 { margin: 14px 0 4px; font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
     #list h4:first-child { margin-top: 0; }
     ul.items { list-style: none; margin: 0; padding: 0; }
@@ -107,7 +135,7 @@
 <main>
   <header>
     <h1>Daily Meal Planner</h1>
-    <p>Get a breakfast, lunch and dinner menu, see what to buy, and send both on WhatsApp.</p>
+    <p>High-protein, high-fibre Indian meals for the day, the list of items to order, and one tap to send both on WhatsApp.</p>
   </header>
 
   <div class="card">
@@ -118,7 +146,7 @@
       <button class="btn" id="next" aria-label="Next day">▶</button>
     </div>
     <div class="controls">
-      <label>People
+      <label>People eating
         <input type="number" id="people" min="1" max="30" inputmode="numeric">
       </label>
       <label>Diet
@@ -132,10 +160,33 @@
         <input type="tel" id="phone" placeholder="e.g. 919876543210">
       </label>
     </div>
+    <div class="controls">
+      <span class="group-title">Daily targets per person</span>
+      <label>Protein (g)
+        <input type="number" id="t-protein" min="30" max="300" step="5" inputmode="numeric">
+      </label>
+      <label>Fibre (g)
+        <input type="number" id="t-fibre" min="10" max="80" inputmode="numeric">
+      </label>
+      <label>Calories (kcal, max)
+        <input type="number" id="t-kcal" min="1000" max="5000" step="50" inputmode="numeric">
+      </label>
+      <label class="check"><input type="checkbox" id="whey"> Include whey protein</label>
+    </div>
   </div>
 
   <section>
-    <h2>Menu <button class="btn ghost" id="shuffle-all">Shuffle all</button></h2>
+    <h2>Today's nutrition <small>per person</small></h2>
+    <div class="card">
+      <div id="targets"></div>
+      <p class="hint" id="fat-sources"></p>
+      <p class="hint">Estimates from standard food tables, using raw weights. Cooking oil is not counted.
+        Use 1–2 tsp of mustard, groundnut or olive oil per meal.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Menu <button class="btn ghost" id="shuffle-all">New plan</button></h2>
     <div id="menu"></div>
   </section>
 

@@ -109,7 +109,15 @@
     .chip { font-size: .8rem; padding: 3px 9px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); font-variant-numeric: tabular-nums; }
     .chip b { font-weight: 700; }
     .chip.muted { color: var(--muted); }
-    .meal.is-salad { background: var(--salad); }
+    .meal-head h3.meal-title { margin: 0; font-size: 1.25rem; }
+    .meal > .chips { margin-top: 8px; }
+    .row { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+    .part { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px;
+      font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+    .row .meal-actions select { font-weight: 600; }
+    .row-sub { margin-top: 6px; font-size: .8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .ing-group { margin-top: 10px; }
+    .ing-group strong { font-size: .9rem; }
 
     #list h4 { margin: 14px 0 4px; font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
     #list h4:first-child { margin-top: 0; }
@@ -135,7 +143,7 @@
 <main>
   <header>
     <h1>Daily Meal Planner</h1>
-    <p>High-protein, high-fibre Indian meals for the day, with salad and curd on the side. Get the list of items to order and send both on WhatsApp.</p>
+    <p>High-protein, high-fibre Indian thalis: dal, sabzi, saag, salad and dahi at lunch and dinner. Get the list of items to order and send both on WhatsApp.</p>
   </header>
 
   <div class="card">
@@ -152,8 +160,8 @@
       <label>Diet
         <select id="diet">
           <option value="veg">Vegetarian</option>
-          <option value="egg">Veg + Egg</option>
-          <option value="nonveg">Non-vegetarian</option>
+          <option value="egg">Veg + Egg (egg curry, bhurji)</option>
+          <option value="nonveg">Non-veg (chicken / fish as dry side)</option>
         </select>
       </label>
       <label>WhatsApp number (optional)

@@ -1,8 +1,13 @@
-// Daily Meal Planner — high-protein, high-fibre menus, shopping list and WhatsApp sharing.
+// Daily Meal Planner — Indian thali menus that hit protein, fibre and good-fat
+// targets, a shopping list and WhatsApp sharing.
 // Everything runs in the browser; choices are kept in localStorage.
 
-const STORAGE_KEY = "meal-planner:v3";
+const STORAGE_KEY = "meal-planner:v4";
 const GOOD_FAT_TARGET = 20; // grams per person per day from nuts, seeds and fish
+
+// How many dishes in one day may use the same main protein before the
+// planner starts to avoid it.
+const PROTEIN_LIMIT = { Paneer: 3, Soya: 3, Eggs: 4, Chicken: 1, Fish: 1 };
 
 // ---------- storage ----------
 
@@ -11,15 +16,19 @@ function loadState() {
   let old = null;
   try {
     saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    // Menus from the previous version used different dishes, so only keep its settings.
-    if (!saved) old = JSON.parse(localStorage.getItem("meal-planner:v2"));
+    // Menus from earlier versions used different dishes, so only keep their settings.
+    if (!saved) old = JSON.parse(localStorage.getItem("meal-planner:v3")) ||
+      JSON.parse(localStorage.getItem("meal-planner:v2"));
   } catch (e) {
     saved = null;
   }
+  const carried = Object.assign({}, old && old.settings);
+  delete carried.whey;
+  delete carried.diet; // the menu structure changed, so the diet is chosen again
+  if (carried.kcal === 2400) delete carried.kcal; // old default; the new default is higher
   const settings = Object.assign(
-    { people: 1, diet: "veg", phone: "", protein: 150, fibre: 30, kcal: 2400 },
-    (saved && saved.settings) || (old && old.settings));
-  delete settings.whey;
+    { people: 1, diet: "nonveg", phone: "", protein: 150, fibre: 30, kcal: 2600 },
+    carried, saved && saved.settings);
   return { settings, days: (saved && saved.days) || {} };
 }
 
@@ -95,6 +104,19 @@ function slotRecipe(day, slot) {
   return findRecipe(slot.pool, day[slot.key]);
 }
 
+// A slot is shown only when there is a real choice to make. In a vegetarian
+// diet the side slots only offer "No side", so they stay hidden.
+function slotVisible(slot) {
+  return candidates(slot.pool).length > 1;
+}
+
+// Pairs of lunch/dinner slots with the same role (dal with dal, and so on).
+const PAIRS = ["dal", "sabzi", "saag", "salad", "dahi", "staple", "side"].map((part) => ({
+  a: SLOTS.findIndex((s) => s.group === "lunch" && s.part === part),
+  b: SLOTS.findIndex((s) => s.group === "dinner" && s.part === part),
+  hard: part !== "staple" && part !== "side",
+}));
+
 // ---------- nutrition & planning ----------
 
 function totals(recipes) {
@@ -107,34 +129,42 @@ function totals(recipes) {
 }
 
 // Lower is better. Heavily penalises missing protein / fibre / good-fat targets,
-// lightly penalises going over calories, repeats and same protein twice.
+// penalises going over calories, repeats and too much of one protein.
 function score(plan, yesterday, jitter) {
   const s = state.settings;
   const t = totals(plan);
   let sc = 0;
   sc += 4 * Math.max(0, s.protein + 3 - t.protein); // small margin so rounding never shows a miss
   sc += 8 * Math.max(0, s.fibre + 1 - t.fibre);
-  sc += 6 * Math.max(0, GOOD_FAT_TARGET + 1 - t.goodFat);
-  sc += Math.max(0, t.kcal - s.kcal) / 2;
+  sc += 10 * Math.max(0, GOOD_FAT_TARGET + 2 - t.goodFat);
+  sc += 1.5 * Math.max(0, t.kcal - (s.kcal - 10)) + 0.01 * t.kcal; // stay under the calorie limit, lighter is slightly better
   // Soft caps so the day doesn't overshoot by a lot.
   sc += 0.3 * Math.max(0, t.protein - (s.protein + 40));
   sc += 1 * Math.max(0, t.fibre - (s.fibre + 15));
-  // Two salads should differ.
-  if (plan[2] && plan[5] && plan[2].id === plan[5].id) sc += 1000;
-  // Don't use the same main protein at lunch and dinner.
-  if (plan[1] && plan[4]) {
-    plan[1].mainProteins.forEach((p) => { if (plan[4].mainProteins.includes(p)) sc += 6; });
-  }
-  // Avoid repeating yesterday's dishes.
-  plan.forEach((r, idx) => { if (r && yesterday[SLOTS[idx].key] === r.id) sc += 12; });
-  // Per-day random preference so menus vary.
-  plan.forEach((r) => { if (r && jitter) sc += jitter[r.id] || 0; });
+  // Lunch and dinner shouldn't repeat a dish.
+  PAIRS.forEach(({ a, b, hard }) => {
+    if (plan[a].id === plan[b].id && plan[a].id !== "none") sc += hard ? 1000 : 4;
+  });
+  // Don't lean on one protein all day.
+  const counts = {};
+  plan.forEach((r) => r.proteinGroups.forEach((g) => (counts[g] = (counts[g] || 0) + 1)));
+  Object.keys(counts).forEach((g) => {
+    sc += 6 * Math.max(0, counts[g] - (PROTEIN_LIMIT[g] || 3));
+  });
+  plan.forEach((r, idx) => {
+    // Chicken / fish / egg side is expected at lunch and dinner unless the diet is veg.
+    if (r.id === "none" && s.diet !== "veg") sc += 40;
+    // Avoid repeating yesterday's dishes.
+    if (r.id !== "none" && yesterday[SLOTS[idx].key] === r.id) sc += 8;
+    // Per-day random preference so menus vary.
+    if (jitter) sc += jitter[r.id] || 0;
+  });
   return sc;
 }
 
 function makeJitter(rand) {
   const j = {};
-  Object.values(RECIPES).flat().forEach((r) => (j[r.id] = rand() * 6));
+  Object.values(RECIPES).flat().forEach((r) => (j[r.id] = rand() * 4));
   return j;
 }
 
@@ -145,13 +175,14 @@ function planDay(date, rand) {
   const pools = SLOTS.map((s) => candidates(s.pool));
   let best = null;
   let bestScore = Infinity;
-  for (let start = 0; start < 16; start++) {
+  for (let start = 0; start < 20; start++) {
     let plan = pools.map((list) => list[Math.floor(rand() * list.length)]);
     let current = score(plan, yesterday, jitter);
-    for (let pass = 0; pass < 4; pass++) {
+    for (let pass = 0; pass < 6; pass++) {
       let improved = false;
       SLOTS.forEach((_, idx) => {
         pools[idx].forEach((r) => {
+          if (r === plan[idx]) return;
           const trial = plan.slice();
           trial[idx] = r;
           const sc = score(trial, yesterday, jitter);
@@ -164,6 +195,7 @@ function planDay(date, rand) {
   }
   const day = state.days[date] || { have: [], extras: [] };
   SLOTS.forEach((s, idx) => (day[s.key] = best[idx].id));
+  day.diet = state.settings.diet;
   state.days[date] = day;
   return day;
 }
@@ -172,7 +204,7 @@ function planDay(date, rand) {
 // every time you open it, until you shuffle.
 function getDay(date) {
   const day = state.days[date];
-  const valid = day && SLOTS.every((s) => {
+  const valid = day && day.diet === state.settings.diet && SLOTS.every((s) => {
     const r = findRecipe(s.pool, day[s.key]);
     return r && candidates(s.pool).includes(r);
   });
@@ -267,11 +299,26 @@ function nutritionLine(t) {
     `Good fats ${Math.round(t.goodFat)} g · ${Math.round(t.kcal).toLocaleString()} kcal`;
 }
 
+function groupSlots(groupKey) {
+  return SLOTS.map((slot, idx) => ({ slot, idx })).filter((x) => x.slot.group === groupKey);
+}
+
 function menuText(day) {
   const lines = [`*Menu for ${prettyDate(currentDate)}*`];
-  SLOTS.forEach((slot) => {
-    const r = slotRecipe(day, slot);
-    lines.push(`${slot.emoji} *${slot.label}:* ${r ? r.name : "-"}`);
+  MEAL_GROUPS.forEach((g) => {
+    const parts = groupSlots(g.key)
+      .map(({ slot }) => ({ slot, r: slotRecipe(day, slot) }))
+      .filter(({ r }) => r && r.id !== "none");
+    lines.push("");
+    if (parts.length === 1) {
+      lines.push(`${g.emoji} *${g.label}:* ${parts[0].r.name}`);
+    } else {
+      lines.push(`${g.emoji} *${g.label}*`);
+      parts.forEach(({ slot, r }) => {
+        const label = slot.part === "side" ? "Side" : slot.label;
+        lines.push(`• ${label}: ${r.name}`);
+      });
+    }
   });
   const t = totals(SLOTS.map((s) => slotRecipe(day, s)));
   lines.push("", `_Per person: ${nutritionLine(t)}_`);
@@ -359,37 +406,76 @@ function renderTargets(day) {
     : "No good-fat sources today. Shuffle a salad or snack to add nuts or seeds.";
 }
 
+function chip(value, label) {
+  return el("span", { class: "chip" }, el("b", {}, value), ` ${label}`);
+}
+
+function nutritionChips(n, withKcal) {
+  return el("div", { class: "chips" },
+    chip(`${Math.round(n.protein)} g`, "protein"),
+    chip(`${Math.round(n.fibre)} g`, "fibre"),
+    n.goodFat >= 1 ? chip(`${Math.round(n.goodFat)} g`, "good fats") : null,
+    withKcal ? el("span", { class: "chip muted" }, `${Math.round(n.kcal)} kcal`) : null);
+}
+
+// A dropdown with the current dish plus a Shuffle button.
+function slotControls(day, slot, idx) {
+  const select = el("select", {
+    id: `pick-${slot.key}`,
+    "aria-label": `Choose ${slot.label}`,
+    onchange: (e) => { day[slot.key] = e.target.value; saveState(); render(); },
+  }, candidates(slot.pool).map((r) => el("option", { value: r.id, selected: r.id === day[slot.key] }, r.name)));
+  return el("div", { class: "meal-actions" },
+    select,
+    el("button", { class: "btn ghost", onclick: () => shuffleSlot(idx), title: "Suggest another dish that keeps the day on target" }, "Shuffle"));
+}
+
 function renderMenu(day) {
   const wrap = $("#menu");
   wrap.innerHTML = "";
   const people = state.settings.people;
-  SLOTS.forEach((slot, idx) => {
-    const recipe = slotRecipe(day, slot);
-    const n = recipe.nutrition;
-    const select = el("select", {
-      id: `pick-${slot.key}`,
-      "aria-label": `Choose ${slot.label}`,
-      onchange: (e) => { day[slot.key] = e.target.value; saveState(); render(); },
-    }, candidates(slot.pool).map((r) => el("option", { value: r.id, selected: r.id === day[slot.key] }, r.name)));
+  MEAL_GROUPS.forEach((g) => {
+    const rows = groupSlots(g.key).filter(({ slot }) => slotVisible(slot));
+    const recipes = rows.map(({ slot }) => slotRecipe(day, slot));
+    const single = rows.length === 1;
+    const card = el("article", { class: "meal" });
 
-    wrap.append(el("article", { class: `meal ${slot.pool === "salad" ? "is-salad" : ""}` },
-      el("div", { class: "meal-head" },
-        el("span", { class: "meal-label" }, slot.label),
-        el("span", { class: `badge ${recipe.diet}` }, DIET_BADGE[recipe.diet])),
-      el("h3", {}, recipe.name),
-      el("div", { class: "chips" },
-        el("span", { class: "chip" }, el("b", {}, `${Math.round(n.protein)} g`), " protein"),
-        el("span", { class: "chip" }, el("b", {}, `${Math.round(n.fibre)} g`), " fibre"),
-        n.goodFat >= 1 ? el("span", { class: "chip" }, el("b", {}, `${Math.round(n.goodFat)} g`), " good fats") : null,
-        el("span", { class: "chip muted" }, `${Math.round(n.kcal)} kcal`)),
-      el("div", { class: "meal-actions" },
-        select,
-        el("button", { class: "btn ghost", onclick: () => shuffleSlot(idx), title: "Suggest another dish that keeps the day on target" }, "Shuffle")),
-      el("details", {},
-        el("summary", {}, people === 1 ? "Ingredients (1 person)" : `Ingredients (${people} people)`),
-        el("ul", { class: "ing" }, recipe.ingredients.map((ing) =>
-          el("li", {}, `${ing.name} – ${formatQty(ing.unit === "pack" ? ing.qty : ing.qty * people, ing.unit)}`))))
-    ));
+    if (single) {
+      const { slot, idx } = rows[0];
+      const r = recipes[0];
+      card.append(
+        el("div", { class: "meal-head" },
+          el("span", { class: "meal-label" }, g.label),
+          el("span", { class: `badge ${r.diet}` }, DIET_BADGE[r.diet])),
+        el("h3", {}, r.name),
+        nutritionChips(r.nutrition, true),
+        slotControls(day, slot, idx));
+    } else {
+      card.append(
+        el("div", { class: "meal-head" },
+          el("h3", { class: "meal-title" }, g.label)),
+        nutritionChips(totals(recipes), true));
+      rows.forEach(({ slot, idx }, n) => {
+        const r = recipes[n];
+        const withBadge = r.diet !== "veg";
+        card.append(el("div", { class: "row" },
+          el("div", { class: "part" },
+            el("span", {}, slot.label),
+            withBadge ? el("span", { class: `badge ${r.diet}` }, DIET_BADGE[r.diet]) : null),
+          slotControls(day, slot, idx),
+          r.id === "none" ? null : el("div", { class: "row-sub" },
+            `${Math.round(r.nutrition.protein)} g protein · ${Math.round(r.nutrition.fibre)} g fibre · ${Math.round(r.nutrition.kcal)} kcal`)));
+      });
+    }
+
+    card.append(el("details", {},
+      el("summary", {}, people === 1 ? "Ingredients (1 person)" : `Ingredients (${people} people)`),
+      recipes.filter((r) => r.id !== "none").map((r) =>
+        el("div", { class: "ing-group" },
+          single ? null : el("strong", {}, r.name),
+          el("ul", { class: "ing" }, r.ingredients.map((ing) =>
+            el("li", {}, `${ing.name} – ${formatQty(ing.unit === "pack" ? ing.qty : ing.qty * people, ing.unit)}`)))))));
+    wrap.append(card);
   });
 }
 
@@ -471,7 +557,11 @@ function init() {
   numberSetting("#t-protein", "protein", 30, 300, true);
   numberSetting("#t-fibre", "fibre", 10, 80, true);
   numberSetting("#t-kcal", "kcal", 1000, 5000, true);
-  $("#diet").addEventListener("change", (e) => { state.settings.diet = e.target.value; render(); });
+  $("#diet").addEventListener("change", (e) => {
+    state.settings.diet = e.target.value;
+    planDay(currentDate, Math.random);
+    render();
+  });
   $("#phone").addEventListener("change", (e) => { state.settings.phone = e.target.value.trim(); render(); });
   $("#shuffle-all").addEventListener("click", replanToday);
   $("#extra-form").addEventListener("submit", (e) => {

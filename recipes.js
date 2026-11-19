@@ -17,7 +17,7 @@
 //     dishes are avoided.
 //
 // A day is built like this:
-//   On waking = digestive drink + soaked nuts & seeds
+//   On waking = digestive drink + soaked almonds, walnuts & anjeer (fixed)
 //   Breakfast = egg dish + gluten-free side + collagen shake + fruit
 //   Lunch  = dal + sabzi + saag + salad + dahi + chutney + roti/rice
 //            (+ optional side) + chaas with flax + haldi-nimbu tea
@@ -193,21 +193,10 @@ const RECIPES = {
       i("Chia seeds", 10), i("Lemon", 0.5, "pcs")] },
   ],
 
+  // Fixed every morning: soaked almonds, walnuts and anjeer.
   nuts: [
-    { id: "almond-walnut", name: "Soaked Almonds & Walnuts", diet: "veg", ingredients: [
-      i("Almonds", 10), i("Walnuts", 10)] },
-    { id: "almond-seeds", name: "Soaked Almonds with Pumpkin & Sunflower Seeds", diet: "veg", ingredients: [
-      i("Almonds", 8), i("Pumpkin seeds", 8), i("Sunflower seeds", 8)] },
-    { id: "walnut-alsi-til", name: "Walnuts with Roasted Alsi & Til", diet: "veg", ingredients: [
-      i("Walnuts", 10), i("Flax seeds (alsi)", 8), i("Sesame seeds (til)", 6)] },
-    { id: "pista-anjeer", name: "Pistachios & Soaked Anjeer", diet: "veg", ingredients: [
-      i("Pistachios", 12), i("Anjeer (dried fig)", 30)] },
-    { id: "makhana-seeds", name: "Roasted Makhana with Pumpkin Seeds", diet: "veg", ingredients: [
-      i("Makhana (fox nuts)", 20), i("Pumpkin seeds", 10)] },
-    { id: "cashew-almond-pista", name: "Cashews, Almonds & Pistachios", diet: "veg", ingredients: [
-      i("Cashews", 8), i("Almonds", 8), i("Pistachios", 8)] },
-    { id: "seed-mix", name: "Seed Mix (Alsi, Sunflower, Pumpkin, Til)", diet: "veg", ingredients: [
-      i("Flax seeds (alsi)", 6), i("Sunflower seeds", 6), i("Pumpkin seeds", 6), i("Sesame seeds (til)", 6)] },
+    { id: "almond-walnut-anjeer", name: "Soaked Almonds, Walnuts & Anjeer", diet: "veg", ingredients: [
+      i("Almonds", 10), i("Walnuts", 10), i("Anjeer (dried fig)", 30)] },
   ],
 
   // ---- Breakfast: egg dish + gluten-free side + collagen shake + fruit ----
@@ -561,7 +550,7 @@ const MEAL_GROUPS = [
 
 const SLOTS = [
   { key: "wakeDrink",      group: "morning",   part: "drink",   label: "Drink",                 pool: "wake" },
-  { key: "wakeNuts",       group: "morning",   part: "nuts",    label: "Soaked nuts & seeds",   pool: "nuts" },
+  { key: "wakeNuts",       group: "morning",   part: "nuts",    label: "Nuts & dry fruit",    pool: "nuts" },
   { key: "breakfastEgg",   group: "breakfast", part: "egg",     label: "Eggs",                  pool: "eggs" },
   { key: "breakfastSide",  group: "breakfast", part: "bside",   label: "Gluten-free side",      pool: "bside" },
   { key: "breakfastCollagen", group: "breakfast", part: "collagen", label: "Protein with collagen", pool: "collagen" },

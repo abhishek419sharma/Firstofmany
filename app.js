@@ -647,7 +647,7 @@ function nutritionChips(n, withKcal) {
     withKcal ? el("span", { class: "chip muted" }, `${Math.round(n.kcal)} kcal`) : null);
 }
 
-const POOL_NOTE = { wake: "Unsweetened", tea: "Unsweetened", chutney: "No added salt" };
+const POOL_NOTE = { wake: "Unsweetened", nuts: "Soak overnight", tea: "Unsweetened", chutney: "No added salt" };
 
 // The small grey line under a dish: a note, then nutrition when it is worth showing.
 function rowSub(slot, r) {

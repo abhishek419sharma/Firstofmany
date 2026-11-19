@@ -17,7 +17,7 @@ A small web app that suggests a full day of Indian meals, builds the list of ite
 ## Use it
 Open `index.html` in any browser (phone or desktop). No install or server needed.
 
-- **The day**: soaked nuts and seeds with a digestive drink on waking; breakfast (eggs, a gluten-free side, collagen shake, fruit); lunch; an evening snack with fruit; and a light dinner.
+- **The day**: soaked almonds, walnuts and anjeer (the same every morning) with a digestive drink on waking; breakfast (eggs, a gluten-free side, collagen shake, fruit); lunch; an evening snack with fruit; and a light dinner.
 - **Lunch is a full thali and dinner is a light version of it**: lunch has one dal, one sabzi, one saag or greens, a simple raw salad (carrot, tomato, kheera, onion, beetroot, lettuce and lemon), dahi or raita, a salt-free chutney, roti or rice, an optional chicken, fish or egg side, buttermilk (chaas) with ground flax, and a haldi-nimbu-ginger-kali mirch tea.
 - **Superfoods**: each day shows which superfoods are in the menu and why, marked as a nutrition fact or a traditional use. The planner rewards a wide range of them.
 - **Nutrition targets**: the planner picks the combination that gives each person at least **150 g protein**, **30 g fibre** and **20 g good fats** (nuts, seeds, fish), and stays under a calorie limit (2,800 kcal by default). You can change these.

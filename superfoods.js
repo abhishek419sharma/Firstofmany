@@ -17,10 +17,8 @@ const SUPERFOODS = {
     why: "Vitamin C and polyphenol antioxidants, plus fibre from the seeds." },
   "Kiwi": { group: "Fruits", kind: "fact", why: "Vitamin C and fibre." },
   "Orange / mosambi": { group: "Fruits", kind: "fact", why: "Vitamin C and fibre." },
-  "Dates (khajoor)": { group: "Fruits", kind: "fact",
-    why: "Fibre-rich (about 8 g per 100 g) but high in natural sugar, so portions are small." },
   "Anjeer (dried fig)": { group: "Fruits", kind: "fact",
-    why: "Fibre-rich (about 10 g per 100 g) with calcium; high in natural sugar, so portions are small." },
+    why: "Fibre-rich (about 10 g per 100 g) with calcium. Soaked anjeer is a traditional help for sluggish bowels. It is high in natural sugar, so the portion is small." },
 
   // Nuts and seeds
   "Flax seeds (alsi)": { group: "Nuts & seeds", kind: "fact",
@@ -81,8 +79,12 @@ const SUPERFOODS = {
     why: "Among the highest-fibre pulses (about 17 g per 100 g) with good protein." },
   "Soya chunks": { group: "Grains, millets & pulses", kind: "fact",
     why: "The highest-protein vegetarian food (about 52 g per 100 g dry)." },
-  "Sattu": { group: "Grains, millets & pulses", kind: "fact",
-    why: "Roasted chana flour: protein and fibre in a cooling drink or paratha." },
+  "Sattu (chana)": { group: "Grains, millets & pulses", kind: "fact",
+    why: "Roasted chana flour: protein and fibre in a cooling drink or paratha. Buy chickpea-only sattu, as some blends contain barley." },
+  "Foxtail millet (kangni)": { group: "Grains, millets & pulses", kind: "fact",
+    why: "Gluten-free millet with about 12 g protein and 8 g fibre per 100 g." },
+  "Makki atta (maize flour)": { group: "Grains, millets & pulses", kind: "fact",
+    why: "Gluten-free maize flour for makki roti; fibre and carotenoids." },
 
   // Herbs and spices
   "Ginger": { group: "Herbs & spices", kind: "traditional",
@@ -116,18 +118,30 @@ const SUPERFOOD_GROUPS = ["Fruits", "Nuts & seeds", "Greens & vegetables",
 
 const SUPERFOOD_NOTES = [
   "“Superfood” is a marketing word. The reasons here are nutrient facts unless marked Traditional use, where research is limited or mixed.",
-  "Digestive teas are a traditional after-meal habit. Ginger, fennel and mint have the most support, but much of the research uses concentrated extracts, not tea.",
+  "The haldi-nimbu-ginger-kali mirch tea is a traditional drink. Black pepper helps turmeric's curcumin absorb, and ginger is the best-studied digestive herb, but the research mostly uses concentrated extracts, not tea.",
   "Chutneys have no added salt. Most published amla and flaxseed chutney recipes include salt, so these rely on lemon, roasted jeera, ginger and chilli. Taste and adjust.",
   "Plant variety: in one large observational study, people eating 30 or more different plant foods a week had more diverse gut bacteria than people eating 10 or fewer. That shows a link, not proof, so treat 30 as a guide.",
 ];
+
+// Foods usually suggested when bowel movements are sluggish: fibre-rich fruit,
+// seeds and greens, plus live-culture dahi. The planner rewards them. Fibre
+// works best with plenty of water.
+const GUT_FRIENDLY = ["Papaya", "Guava", "Pear", "Apple", "Kiwi", "Orange / mosambi",
+  "Flax seeds (alsi)", "Chia seeds", "Anjeer (dried fig)", "Spinach (palak)", "Methi leaves",
+  "Sweet potato (shakarkandi)", "Dahi (curd)", "Moong sprouts", "Amla (Indian gooseberry)"];
+
 
 // Check every name exists, and tag each dish with the superfoods it contains.
 Object.keys(SUPERFOODS).forEach((name) => {
   if (!NUTRITION[name]) throw new Error("Superfood missing from NUTRITION: " + name);
 });
+Object.keys(SUPERFOODS).concat(GUT_FRIENDLY).forEach((name) => {
+  if (!NUTRITION[name]) throw new Error("Missing from NUTRITION: " + name);
+});
 Object.values(RECIPES).flat().forEach((r) => {
-  r.superfoods = Array.from(new Set(
-    r.ingredients.map((ing) => ing.name).filter((n) => SUPERFOODS[n])));
+  const names = r.ingredients.map((ing) => ing.name);
+  r.superfoods = Array.from(new Set(names.filter((n) => SUPERFOODS[n])));
+  r.gut = Array.from(new Set(names.filter((n) => GUT_FRIENDLY.includes(n))));
 });
 
 // Plant foods count towards the variety guide; dairy, meat, fish and eggs do not.

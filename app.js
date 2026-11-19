@@ -9,7 +9,7 @@ const GOOD_FAT_TARGET = 20; // grams per person per day from nuts, seeds and fis
 
 // How many dishes in one day may use the same main protein before the
 // planner starts to avoid it.
-const PROTEIN_LIMIT = { Paneer: 3, Soya: 3, Eggs: 4, Chicken: 1, Fish: 1 };
+const PROTEIN_LIMIT = { Paneer: 3, Eggs: 4, Chicken: 1, Fish: 1 };
 
 // ---------- storage ----------
 

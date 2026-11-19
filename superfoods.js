@@ -77,8 +77,6 @@ const SUPERFOODS = {
     why: "Millet with fibre, iron and magnesium; gluten-free." },
   "Kala chana": { group: "Grains, millets & pulses", kind: "fact",
     why: "Among the highest-fibre pulses (about 17 g per 100 g) with good protein." },
-  "Soya chunks": { group: "Grains, millets & pulses", kind: "fact",
-    why: "The highest-protein vegetarian food (about 52 g per 100 g dry)." },
   "Sattu (chana)": { group: "Grains, millets & pulses", kind: "fact",
     why: "Roasted chana flour: protein and fibre in a cooling drink or paratha. Buy chickpea-only sattu, as some blends contain barley." },
   "Foxtail millet (kangni)": { group: "Grains, millets & pulses", kind: "fact",
@@ -108,7 +106,7 @@ const SUPERFOODS = {
 
   // Dairy
   "Dahi (curd)": { group: "Dairy", kind: "fact",
-    why: "Protein and calcium, plus live cultures (probiotics) when fresh and not heat-treated." },
+    why: "Protein and calcium, plus live cultures (probiotics) when fresh and not heat-treated. Churned with water, it becomes chaas (buttermilk)." },
   "Hung curd (chakka)": { group: "Dairy", kind: "fact",
     why: "Thick dahi with about three times the protein of plain curd." },
 };

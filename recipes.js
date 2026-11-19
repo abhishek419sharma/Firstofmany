@@ -8,6 +8,8 @@
 //   - No added sugar, honey or jaggery. Whole fruit only.
 //   - No red chilli: masalas are red-chilli-free (black pepper, ajwain, garam
 //     masala, dhania-jeera). Fresh green chilli is small and optional.
+//   - No soya anywhere.
+//   - Lunch always has buttermilk (chaas) with ground flax.
 //   - Breakfast always has 4 egg whites + 1 yolk and a collagen protein shake.
 //   - Chicken and fish only ever appear as a dry SIDE, never in gravy or as the
 //     main course. Egg curry is allowed.
@@ -17,7 +19,7 @@
 //   On waking = digestive drink + soaked nuts & seeds
 //   Breakfast = egg dish + gluten-free side + collagen shake + fruit
 //   Lunch  = dal + sabzi + saag + salad + dahi + chutney + roti/rice
-//            (+ optional side) + haldi-nimbu tea
+//            (+ optional side) + chaas with flax + haldi-nimbu tea
 //   Evening snack = snack + fruit
 //   Dinner = same parts as lunch, with a smaller roti
 //
@@ -34,7 +36,7 @@ const CATEGORIES = [
   "Fruits",
   "Dairy",
   "Meat, Fish & Eggs",
-  "Pulses & Soya",
+  "Pulses & Dals",
   "Grains & Flour",
   "Nuts, Seeds & Dry Fruits",
   "Spices & Masala",
@@ -45,19 +47,18 @@ const CATEGORIES = [
 // All per 100 g. "goodFat" marks sources of mostly unsaturated fat
 // (nuts, seeds, fish). Pieces: eggs, whites, yolks, lemon, chilli, scoops.
 const NUTRITION = {
-  // Pulses & soya
-  "Moong dal":          ["Pulses & Soya", 24.5, 8.2, 1.2, 348],
-  "Green moong (whole)": ["Pulses & Soya", 22.5, 16.3, 1.2, 334],
-  "Toor dal":           ["Pulses & Soya", 22.3, 15, 1.7, 343],
-  "Masoor dal":         ["Pulses & Soya", 24.6, 10.8, 1.1, 352],
-  "Chana dal":          ["Pulses & Soya", 21, 10, 5, 370],
-  "Rajma":              ["Pulses & Soya", 22.5, 15.2, 1.1, 333],
-  "Kabuli chana":       ["Pulses & Soya", 20.5, 12.2, 6, 378],
-  "Kala chana":         ["Pulses & Soya", 20, 17, 5, 360],
-  "Lobia (black-eyed peas)": ["Pulses & Soya", 24, 11, 1.4, 336],
-  "Roasted chana":      ["Pulses & Soya", 22, 15, 5, 370],
-  "Sattu (chana)":      ["Pulses & Soya", 22, 15, 5.5, 380],
-  "Soya chunks":        ["Pulses & Soya", 52, 13, 0.5, 345],
+  // Pulses & dals
+  "Moong dal":          ["Pulses & Dals", 24.5, 8.2, 1.2, 348],
+  "Green moong (whole)": ["Pulses & Dals", 22.5, 16.3, 1.2, 334],
+  "Toor dal":           ["Pulses & Dals", 22.3, 15, 1.7, 343],
+  "Masoor dal":         ["Pulses & Dals", 24.6, 10.8, 1.1, 352],
+  "Chana dal":          ["Pulses & Dals", 21, 10, 5, 370],
+  "Rajma":              ["Pulses & Dals", 22.5, 15.2, 1.1, 333],
+  "Kabuli chana":       ["Pulses & Dals", 20.5, 12.2, 6, 378],
+  "Kala chana":         ["Pulses & Dals", 20, 17, 5, 360],
+  "Lobia (black-eyed peas)": ["Pulses & Dals", 24, 11, 1.4, 336],
+  "Roasted chana":      ["Pulses & Dals", 22, 15, 5, 370],
+  "Sattu (chana)":      ["Pulses & Dals", 22, 15, 5.5, 380],
   "Besan":              ["Grains & Flour", 22, 10.8, 6.7, 387],
   // Dairy
   "Paneer":             ["Dairy", 18, 0, 20, 265],
@@ -279,8 +280,6 @@ const RECIPES = {
       i("Roasted chana", 40), i("Almonds", 10), i("Hung curd (chakka)", 150)] },
     { id: "sattu-drink", name: "Sattu Drink with Milk & Peanuts (unsweetened)", diet: "veg", ingredients: [
       i("Sattu (chana)", 40), i("Milk (toned)", 250, "ml"), i("Peanuts", 15), i("Roasted jeera powder", 1, "pack")] },
-    { id: "soya-tikka", name: "Soya Chunk Tikka (grilled)", diet: "veg", ingredients: [
-      i("Soya chunks", 40), i("Hung curd (chakka)", 50), i("Capsicum", 50), i("Onion", 30), ...tandoori()] },
     { id: "paneer-tikka", name: "Paneer Tikka (grilled) with Pudina Chutney", diet: "veg", ingredients: [
       i("Paneer", 120), i("Hung curd (chakka)", 40), i("Capsicum", 60), i("Onion", 30),
       i("Mint (pudina)", 0.25, "bunch"), ...tandoori()] },
@@ -291,6 +290,9 @@ const RECIPES = {
     { id: "makhana-chaat", name: "Roasted Makhana & Chana Chaat with Peanuts", diet: "veg", ingredients: [
       i("Makhana (fox nuts)", 30), i("Roasted chana", 40), i("Peanuts", 10), i("Onion", 20),
       i("Tomato", 30), i("Lemon", 0.5, "pcs"), i("Roasted jeera powder", 1, "pack")] },
+    { id: "chana-seeds-chaas", name: "Roasted Chana, Pumpkin Seeds & Masala Chaas", diet: "veg", ingredients: [
+      i("Roasted chana", 40), i("Pumpkin seeds", 10), i("Dahi (curd)", 150),
+      i("Roasted jeera powder", 1, "pack"), i("Kali mirch (black pepper)", 1, "pack")] },
     { id: "egg-chaat", name: "Boiled Egg Chaat (2 eggs) & Guava", diet: "egg", ingredients: [
       i("Eggs", 2, "pcs"), i("Guava", 150), i("Onion", 20), i("Roasted jeera powder", 1, "pack"),
       i("Kali mirch (black pepper)", 1, "pack")] },
@@ -353,16 +355,16 @@ const RECIPES = {
     { id: "shakarkandi", name: "Shakarkandi (Sweet Potato) Sabzi", diet: "veg", ingredients: [
       i("Sweet potato (shakarkandi)", 150), i("Green peas", 40), i("Green chilli", 1, "pcs"),
       i("Coriander", 0.25, "bunch")] },
+    { id: "sprouts-sabzi", name: "Moong Sprouts Masala Sabzi", diet: "veg", ingredients: [
+      i("Moong sprouts", 120), i("Onion", 40), i("Tomato", 40), i("Ginger", 5), i("Green chilli", 1, "pcs")] },
+    { id: "chana-palak", name: "Chana Palak Sabzi (dry)", diet: "veg", ingredients: [
+      i("Kabuli chana", 30), i("Spinach (palak)", 150), i("Onion", 30), i("Garlic", 5)] },
     { id: "mushroom-matar", name: "Mushroom Matar", diet: "veg", ingredients: [
       i("Mushrooms", 150), i("Green peas", 60), i("Onion", 40), i("Tomato", 40), i("Ginger", 5)] },
     { id: "matar-paneer", name: "Matar Paneer", diet: "veg", ingredients: [
       i("Paneer", 90), i("Green peas", 70), i("Tomato", 60), i("Onion", 40)] },
     { id: "paneer-capsicum", name: "Paneer Capsicum Sabzi", diet: "veg", ingredients: [
       i("Paneer", 90), i("Capsicum", 120), i("Onion", 40), i("Tomato", 40)] },
-    { id: "soya-keema", name: "Soya Keema Matar", diet: "veg", ingredients: [
-      i("Soya chunks", 35), i("Green peas", 60), i("Onion", 40), i("Tomato", 60), i("Ginger", 5)] },
-    { id: "soya-masala", name: "Soya Chunk Masala (dry)", diet: "veg", ingredients: [
-      i("Soya chunks", 35), i("Capsicum", 80), i("Onion", 50), i("Tomato", 50), i("Garlic", 5)] },
   ],
 
   saag: [
@@ -459,6 +461,22 @@ const RECIPES = {
       i("Beetroot", 60), i("Ginger", 5), i("Green chilli", 1, "pcs"), i("Lemon", 0.5, "pcs")] },
   ],
 
+  // Buttermilk with ground flax (alsi) at lunch, every day.
+  chaas: [
+    { id: "masala-chaas", name: "Masala Chaas with Ground Alsi", diet: "veg", ingredients: [
+      i("Dahi (curd)", 100), i("Flax seeds (alsi)", 8), i("Roasted jeera powder", 1, "pack"),
+      i("Kali mirch (black pepper)", 1, "pack"), i("Coriander", 0.25, "bunch")] },
+    { id: "pudina-chaas", name: "Pudina Chaas with Ground Alsi", diet: "veg", ingredients: [
+      i("Dahi (curd)", 100), i("Flax seeds (alsi)", 8), i("Mint (pudina)", 0.25, "bunch"),
+      i("Roasted jeera powder", 1, "pack")] },
+    { id: "ginger-chaas", name: "Ginger-Jeera Chaas with Ground Alsi", diet: "veg", ingredients: [
+      i("Dahi (curd)", 100), i("Flax seeds (alsi)", 8), i("Ginger", 5), i("Jeera (cumin seeds)", 1, "pack")] },
+    { id: "curry-leaf-chaas", name: "Curry Leaf-Ginger Chaas with Ground Alsi", diet: "veg", ingredients: [
+      i("Dahi (curd)", 100), i("Flax seeds (alsi)", 8), i("Curry leaves", 0.25, "bunch"), i("Ginger", 5)] },
+    { id: "cucumber-chaas", name: "Cucumber-Mint Chaas with Ground Alsi", diet: "veg", ingredients: [
+      i("Dahi (curd)", 100), i("Flax seeds (alsi)", 8), i("Cucumber", 50), i("Mint (pudina)", 0.25, "bunch")] },
+  ],
+
   // The one tea: haldi, nimbu, ginger and black pepper. Unsweetened.
   tea: [
     { id: "haldi-nimbu-tea", name: "Haldi-Nimbu-Ginger-Kali Mirch Tea", diet: "veg", ingredients: [
@@ -548,6 +566,7 @@ const SLOTS = [
   { key: "lunchChutney",   group: "lunch",     part: "chutney", label: "Chutney",               pool: "chutney" },
   { key: "lunchStaple",    group: "lunch",     part: "staple",  label: "Roti / rice",           pool: "staple" },
   { key: "lunchSide",      group: "lunch",     part: "side",    label: "Chicken / fish / egg side", pool: "side" },
+  { key: "lunchChaas",     group: "lunch",     part: "chaas",   label: "Buttermilk (chaas) with flax", pool: "chaas" },
   { key: "lunchTea",       group: "lunch",     part: "tea",     label: "Tea",                   pool: "tea" },
   { key: "snack",          group: "snack",     part: "main",    label: "Snack",                 pool: "snack" },
   { key: "snackFruit",     group: "snack",     part: "fruit",   label: "Fruit",                 pool: "fruit" },
@@ -564,7 +583,7 @@ const SLOTS = [
 
 // Used to stop one protein from showing up too often in a day.
 const PROTEIN_GROUP = {
-  "Paneer": "Paneer", "Soya chunks": "Soya", "Eggs": "Eggs", "Egg whites": "Eggs", "Egg yolk": "Eggs",
+  "Paneer": "Paneer", "Eggs": "Eggs", "Egg whites": "Eggs", "Egg yolk": "Eggs",
   "Chicken breast (boneless)": "Chicken", "Chicken (curry cut, skinless)": "Chicken",
   "Chicken mince (keema)": "Chicken", "Fish (rohu / basa)": "Fish",
 };

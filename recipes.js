@@ -11,8 +11,9 @@
 //   - No soya anywhere.
 //   - Lunch always has buttermilk (chaas) with ground flax.
 //   - Breakfast always has 4 egg whites + 1 yolk and a collagen protein shake.
-//   - Chicken and fish only ever appear as a dry SIDE, never in gravy or as the
-//     main course. Egg curry is allowed.
+//   - Chicken and fish only ever appear as a GRILLED side at lunch and dinner,
+//     never in gravy or as the main course. No eggs at lunch or dinner, because
+//     eggs are at breakfast.
 //   - Dinner is lighter: no dal or legumes, a smaller roti, and rich or heavy
 //     dishes are avoided.
 //
@@ -20,10 +21,10 @@
 //   On waking = digestive drink + soaked almonds, walnuts & anjeer (fixed)
 //   Breakfast = egg dish + gluten-free side + collagen shake + fruit
 //   Lunch  = dal + sabzi + saag + salad + dahi + chutney + roti/rice
-//            (+ optional side) + chaas with flax + haldi-nimbu tea
+//            (+ grilled chicken or fish side) + chaas with flax + haldi-nimbu tea
 //   Evening snack = snack + fruit
 //   Dinner = sabzi + saag + salad + dahi + chutney + a smaller roti/rice
-//            (+ optional side) + tea. No dal or legumes at dinner.
+//            (+ grilled chicken or fish side) + tea. No dal or legumes at dinner.
 //
 // Quantities are PER PERSON and get multiplied by the number of people.
 // Nutrition is calculated from the ingredients using NUTRITION below
@@ -856,7 +857,7 @@ const RECIPES = {
       i("Little millet (kutki)", 50), i("Jeera (cumin seeds)", 1, "pack")] },
   ],
 
-  // Chicken and fish only as a dry side, never in gravy. Egg curry is fine.
+  // Grilled chicken or fish only, never in gravy. No eggs here: eggs are at breakfast.
   side: [
     { id: "none", name: "No side", diet: "veg", ingredients: [] },
     { id: "chicken-tikka", name: "Chicken Tikka (grilled)", diet: "nonveg", ingredients: [
@@ -866,24 +867,8 @@ const RECIPES = {
     { id: "chicken-seekh", name: "Chicken Seekh Kebab (grilled)", diet: "nonveg", ingredients: [
       i("Chicken mince (keema)", 120), i("Onion", 20), i("Ginger", 5), i("Mint (pudina)", 0.25, "bunch"),
       i("Kali mirch (black pepper)", 1, "pack")] },
-    { id: "pepper-chicken", name: "Dry Pepper Chicken (stir-cooked)", diet: "nonveg", ingredients: [
-      i("Chicken breast (boneless)", 125), i("Onion", 40), i("Garlic", 5),
-      i("Curry leaves", 0.25, "bunch"), i("Kali mirch (black pepper)", 1, "pack")] },
     { id: "ajwaini-fish", name: "Ajwaini Fish Tikka (grilled)", diet: "nonveg", ingredients: [
       i("Fish (rohu / basa)", 150), i("Hung curd (chakka)", 30), i("Lemon", 0.5, "pcs"), ...tandoori()] },
-    { id: "lemon-pepper-fish", name: "Lemon-Pepper Fish (tawa-roasted)", diet: "nonveg", ingredients: [
-      i("Fish (rohu / basa)", 150), i("Lemon", 1, "pcs"), i("Kali mirch (black pepper)", 1, "pack"),
-      i("Coriander", 0.25, "bunch"), i("Roasted jeera powder", 1, "pack")] },
-    { id: "egg-curry", name: "Egg Curry (2 eggs)", diet: "egg", ingredients: [
-      i("Eggs", 2, "pcs"), i("Onion", 50), i("Tomato", 70), i("Ginger", 5), i("Garlic", 5),
-      i("Dhania-jeera powder", 1, "pack")] },
-    { id: "bhurji-side", name: "Anda Bhurji (2 eggs)", diet: "egg", ingredients: [
-      i("Eggs", 2, "pcs"), i("Onion", 40), i("Tomato", 40), i("Capsicum", 30), ...herbs()] },
-    { id: "boiled-eggs", name: "Masala Boiled Eggs (2)", diet: "egg", ingredients: [
-      i("Eggs", 2, "pcs"), i("Onion", 20), i("Lemon", 0.5, "pcs"), i("Roasted jeera powder", 1, "pack"),
-      i("Kali mirch (black pepper)", 1, "pack")] },
-    { id: "omelette-side", name: "Masala Omelette (2 eggs)", diet: "egg", ingredients: [
-      i("Eggs", 2, "pcs"), i("Onion", 30), i("Tomato", 30), ...herbs()] },
     { id: "chicken-hariyali", name: "Chicken Hariyali Tikka (grilled)", diet: "nonveg", ingredients: [
       i("Chicken breast (boneless)", 125), i("Hung curd (chakka)", 30),
       i("Mint (pudina)", 0.25, "bunch"), i("Coriander", 0.25, "bunch"), i("Green chilli", 1, "pcs"),
@@ -904,37 +889,24 @@ const RECIPES = {
       i("Chicken breast (boneless)", 125), i("Hung curd (chakka)", 30),
       i("Ajwain (carom seeds)", 1, "pack"), i("Lemon", 0.5, "pcs"),
       i("Kali mirch (black pepper)", 1, "pack")] },
-    { id: "chicken-curry-leaf", name: "Curry Leaf Chicken (dry roasted)", diet: "nonveg", ingredients: [
-      i("Chicken breast (boneless)", 125), i("Curry leaves", 0.5, "bunch"),
-      i("Kali mirch (black pepper)", 1, "pack"), i("Lemon", 0.5, "pcs"), i("Ginger", 5)] },
-    { id: "patra-ni-machhi", name: "Patra ni Machhi (steamed in banana leaf, green chutney)", diet: "nonveg", ingredients: [
-      i("Fish (rohu / basa)", 150), i("Coriander", 0.5, "bunch"), i("Mint (pudina)", 0.25, "bunch"),
-      i("Coconut (fresh)", 15), i("Green chilli", 1, "pcs"), i("Lemon", 0.5, "pcs"),
-      i("Jeera (cumin seeds)", 1, "pack")] },
-    { id: "bhapa-fish", name: "Steamed Fish with Mustard-Curd (bhapa style)", diet: "nonveg", ingredients: [
-      i("Fish (rohu / basa)", 150), i("Dahi (curd)", 40), i("Rai (mustard seeds)", 1, "pack"),
-      i("Green chilli", 1, "pcs"), i("Haldi (turmeric powder)", 1, "pack")] },
     { id: "fish-hariyali", name: "Hariyali Fish Tikka (grilled)", diet: "nonveg", ingredients: [
       i("Fish (rohu / basa)", 150), i("Hung curd (chakka)", 30), i("Mint (pudina)", 0.25, "bunch"),
       i("Coriander", 0.25, "bunch"), i("Green chilli", 1, "pcs"), i("Lemon", 0.5, "pcs")] },
-    { id: "fish-curry-leaf", name: "Curry Leaf Roasted Fish (Kerala style, dry)", diet: "nonveg", ingredients: [
-      i("Fish (rohu / basa)", 150), i("Curry leaves", 0.5, "bunch"),
-      i("Kali mirch (black pepper)", 1, "pack"), i("Lemon", 1, "pcs"), i("Ginger", 5), i("Garlic", 3)] },
-    { id: "egg-podimas-side", name: "Egg Podimas (2 eggs)", diet: "egg", ingredients: [
-      i("Eggs", 2, "pcs"), i("Onion", 40), i("Curry leaves", 0.25, "bunch"), i("Ginger", 5),
-      i("Kali mirch (black pepper)", 1, "pack")] },
-    { id: "egg-thoran-side", name: "Egg Thoran with Coconut (2 eggs)", diet: "egg", ingredients: [
-      i("Eggs", 2, "pcs"), i("Coconut (fresh)", 10), i("Onion", 30), i("Curry leaves", 0.25, "bunch")] },
-    { id: "akuri-side", name: "Parsi Akuri (2 eggs)", diet: "egg", ingredients: [
-      i("Eggs", 2, "pcs"), i("Onion", 30), i("Tomato", 30), i("Coriander", 0.25, "bunch"),
-      i("Green chilli", 1, "pcs")] },
-    { id: "egg-masala-dry", name: "Egg Masala, dry (2 boiled eggs)", diet: "egg", ingredients: [
-      i("Eggs", 2, "pcs"), i("Onion", 40), i("Tomato", 50), i("Dhania-jeera powder", 1, "pack"),
-      i("Kali mirch (black pepper)", 1, "pack")] },
-    { id: "kerala-egg-curry", name: "Kerala Egg Curry (light coconut, 2 eggs)", diet: "egg", ingredients: [
-      i("Eggs", 2, "pcs"), i("Onion", 40), i("Tomato", 40), i("Coconut (fresh)", 15),
-      i("Curry leaves", 0.25, "bunch"), i("Kali mirch (black pepper)", 1, "pack"), i("Ginger", 5),
-      i("Garlic", 3)] },
+    { id: "pepper-chicken", name: "Black Pepper Chicken Tikka (grilled)", diet: "nonveg", ingredients: [
+      i("Chicken breast (boneless)", 125), i("Hung curd (chakka)", 30), i("Garlic", 5),
+      i("Lemon", 0.5, "pcs"), i("Kali mirch (black pepper)", 1, "pack")] },
+    { id: "chicken-curry-leaf", name: "Curry Leaf Chicken Tikka (grilled)", diet: "nonveg", ingredients: [
+      i("Chicken breast (boneless)", 125), i("Hung curd (chakka)", 30), i("Curry leaves", 0.5, "bunch"),
+      i("Ginger", 5), i("Lemon", 0.5, "pcs"), i("Kali mirch (black pepper)", 1, "pack")] },
+    { id: "lemon-pepper-fish", name: "Lemon-Pepper Fish (grilled)", diet: "nonveg", ingredients: [
+      i("Fish (rohu / basa)", 150), i("Lemon", 1, "pcs"), i("Kali mirch (black pepper)", 1, "pack"),
+      i("Coriander", 0.25, "bunch"), i("Roasted jeera powder", 1, "pack")] },
+    { id: "fish-curry-leaf", name: "Curry Leaf Fish (grilled)", diet: "nonveg", ingredients: [
+      i("Fish (rohu / basa)", 150), i("Curry leaves", 0.5, "bunch"), i("Ginger", 5), i("Garlic", 3),
+      i("Lemon", 1, "pcs"), i("Kali mirch (black pepper)", 1, "pack")] },
+    { id: "patra-ni-machhi", name: "Patra ni Machhi (banana-leaf parcel, grilled)", diet: "nonveg", ingredients: [
+      i("Fish (rohu / basa)", 150), i("Coriander", 0.5, "bunch"), i("Mint (pudina)", 0.25, "bunch"),
+      i("Coconut (fresh)", 15), i("Green chilli", 1, "pcs"), i("Lemon", 0.5, "pcs"), i("Jeera (cumin seeds)", 1, "pack")] },
   ],
 };
 
@@ -947,7 +919,7 @@ RECIPES.stapleLight = RECIPES.staple.map((r) => ({
 // Dishes that are rich, gravy-heavy or slow to digest. The planner keeps them
 // away from dinner.
 const HEAVY_AT_NIGHT = ["rajma", "chole", "kala-chana", "lobia", "matar-paneer", "paneer-capsicum",
-  "palak-paneer", "tandoori-chicken", "egg-curry", "kerala-egg-curry", "bajra-roti-1", "makki-roti-1"];
+  "palak-paneer", "tandoori-chicken", "bajra-roti-1", "makki-roti-1"];
 Object.values(RECIPES).flat().forEach((r) => { r.heavy = HEAVY_AT_NIGHT.includes(r.id); });
 
 // Dals, beans, chickpeas and their flours and sprouts. None of these are served
@@ -983,7 +955,7 @@ const SLOTS = [
   { key: "lunchDahi",      group: "lunch",     part: "dahi",    label: "Dahi / raita",          pool: "dahi" },
   { key: "lunchChutney",   group: "lunch",     part: "chutney", label: "Chutney",               pool: "chutney" },
   { key: "lunchStaple",    group: "lunch",     part: "staple",  label: "Roti / rice",           pool: "staple" },
-  { key: "lunchSide",      group: "lunch",     part: "side",    label: "Chicken / fish / egg side", pool: "side" },
+  { key: "lunchSide",      group: "lunch",     part: "side",    label: "Grilled chicken / fish", pool: "side" },
   { key: "lunchChaas",     group: "lunch",     part: "chaas",   label: "Buttermilk (chaas) with flax", pool: "chaas" },
   { key: "lunchTea",       group: "lunch",     part: "tea",     label: "Tea",                   pool: "tea" },
   { key: "snack",          group: "snack",     part: "main",    label: "Snack",                 pool: "snack" },
@@ -994,7 +966,7 @@ const SLOTS = [
   { key: "dinnerDahi",     group: "dinner", noLegumes: true,    part: "dahi",    label: "Dahi / raita",          pool: "dahi" },
   { key: "dinnerChutney",  group: "dinner", noLegumes: true,    part: "chutney", label: "Chutney",               pool: "chutney" },
   { key: "dinnerStaple",   group: "dinner", noLegumes: true,    part: "staple",  label: "Roti / rice (smaller)", pool: "stapleLight" },
-  { key: "dinnerSide",     group: "dinner", noLegumes: true,    part: "side",    label: "Chicken / fish / egg side", pool: "side" },
+  { key: "dinnerSide",     group: "dinner", noLegumes: true,    part: "side",    label: "Grilled chicken / fish", pool: "side" },
   { key: "dinnerTea",      group: "dinner", noLegumes: true,    part: "tea",     label: "Tea",                   pool: "tea" },
 ];
 

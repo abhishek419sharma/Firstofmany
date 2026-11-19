@@ -242,7 +242,7 @@ function score(plan, ctx, jitter) {
       dinnerKcal += n.kcal;
       if (r.heavy) sc += 25; // rich or heavy dishes stay away from dinner
     }
-    // Chicken / fish / egg side is expected at lunch and dinner.
+    // A grilled chicken or fish side is expected at lunch and dinner.
     if (r.id === "none") sc += 40;
     // Avoid repeating yesterday's dishes.
     else if (ctx.yesterday[SLOTS[idx].key] === r.id) sc += 8;

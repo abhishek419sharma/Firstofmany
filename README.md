@@ -11,7 +11,7 @@ A small web app that suggests a full day of Indian meals, builds the list of ite
 - **Buttermilk and flax every day**: lunch always includes chaas with ground flax (alsi).
 - **In season**: raw mango, jamun, melons, plums and peaches appear only in summer, and fresh amla and sarson only in winter.
 - **Breakfast always has** 4 egg whites + 1 yolk and a collagen protein shake.
-- **Chicken and fish only as a dry side** (tikka, seekh kebab, lemon-pepper fish), never in gravy or as the main dish. Egg curry is allowed.
+- **Chicken and fish only grilled, as a side** at lunch and dinner (tikka, seekh kebab, grilled fish), never in gravy or as the main dish. There are no eggs in the side, because eggs are at breakfast. Choose the diet to match: vegetarian lunch and dinner with egg at breakfast, or grilled chicken or fish at lunch and dinner.
 - **Light dinner**: no dal or legumes (dals, rajma, chana, sprouts, besan), a smaller roti, rich or heavy dishes kept to lunch, and a dinner calorie limit (650 kcal by default).
 - **Bowel-friendly**: the planner favours fibre-rich fruit, flax and chia, soaked anjeer, greens and dahi.
 
@@ -22,7 +22,7 @@ Over 250 dishes across the day, from Kerala thorans and avial, Bengali lau ghont
 Open `index.html` in any browser (phone or desktop). No install or server needed.
 
 - **The day**: soaked almonds, walnuts and anjeer (the same every morning) with a digestive drink on waking; breakfast (eggs, a gluten-free side, collagen shake, fruit); lunch; an evening snack with fruit; and a light dinner.
-- **Lunch is a full thali and dinner is a light version of it**: lunch has one dal, one sabzi, one saag or greens, a simple raw salad (carrot, tomato, kheera, onion, beetroot, lettuce and lemon), dahi or raita, a salt-free chutney, roti or rice, an optional chicken, fish or egg side, buttermilk (chaas) with ground flax, and a haldi-nimbu-ginger-kali mirch tea.
+- **Lunch is a full thali and dinner is a light version of it**: lunch has one dal, one sabzi, one saag or greens, a simple raw salad (carrot, tomato, kheera, onion, beetroot, lettuce and lemon), dahi or raita, a salt-free chutney, roti or rice, a grilled chicken or fish side (non-veg diet), buttermilk (chaas) with ground flax, and a haldi-nimbu-ginger-kali mirch tea.
 - **Superfoods**: each day shows which superfoods are in the menu and why, marked as a nutrition fact or a traditional use. The planner rewards a wide range of them.
 - **Nutrition targets**: the planner picks the combination that gives each person at least **150 g protein**, **30 g fibre** and **20 g good fats** (nuts, seeds, fish), and stays under a calorie limit (2,800 kcal by default). You can change these.
 - **Menu**: each day gets its own plan and avoids yesterday's dishes. **Shuffle** swaps one dish for another that keeps the day on target. **New plan** redoes the whole day. You can also pick any dish from its dropdown.

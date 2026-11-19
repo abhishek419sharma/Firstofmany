@@ -116,6 +116,19 @@
       font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
     .row .meal-actions select { font-weight: 600; }
     .row-sub { margin-top: 6px; font-size: .8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+    #sf-chips { margin: 0 0 4px; }
+    .sf-block h4 { margin: 14px 0 4px; font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+    .sf-block h4:first-child { margin-top: 0; }
+    ul.sf { list-style: none; margin: 0; padding: 0; }
+    ul.sf li { padding: 8px 0; border-bottom: 1px solid var(--line); }
+    ul.sf li:last-child { border-bottom: 0; }
+    .sf-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; }
+    .tag { font-size: .7rem; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+    .tag.fact { color: var(--accent); border-color: var(--accent); }
+    .sf-why { font-size: .9rem; margin-top: 2px; }
+    .sf-in { font-size: .8rem; color: var(--muted); margin-top: 2px; }
+    ul.hint-list { margin: 14px 0 0; padding-left: 18px; color: var(--muted); font-size: .85rem; }
+    ul.hint-list li + li { margin-top: 6px; }
     .ing-group { margin-top: 10px; }
     .ing-group strong { font-size: .9rem; }
 
@@ -143,7 +156,7 @@
 <main>
   <header>
     <h1>Daily Meal Planner</h1>
-    <p>High-protein, high-fibre Indian thalis: dal, sabzi, saag, salad and dahi at lunch and dinner. Get the list of items to order and send both on WhatsApp.</p>
+    <p>High-protein, high-fibre Indian thalis with soaked nuts, fruit, superfoods, salt-free chutney and digestive teas. Get the list of items to order and send both on WhatsApp.</p>
   </header>
 
   <div class="card">
@@ -198,6 +211,22 @@
   </section>
 
   <section>
+    <h2>Superfoods today <small id="sf-count"></small></h2>
+    <div class="card">
+      <div id="sf-chips" class="chips"></div>
+      <details>
+        <summary>Why each one is in today's menu</summary>
+        <div id="sf-today" class="sf-block"></div>
+      </details>
+      <details>
+        <summary>More superfoods in the rotation</summary>
+        <div id="sf-all" class="sf-block"></div>
+      </details>
+      <ul class="hint-list" id="sf-notes"></ul>
+    </div>
+  </section>
+
+  <section>
     <h2>Items to order <small id="list-count"></small></h2>
     <div class="card">
       <div id="list"></div>
@@ -206,7 +235,7 @@
         <button class="btn" type="submit">Add</button>
       </form>
       <p class="hint">Tick what you already have at home. Ticked items are left out of the WhatsApp order.
-        Basic staples (salt, oil, turmeric, chilli powder, jeera) are assumed to be at home.</p>
+        Basic staples (salt, oil, chilli powder) are assumed to be at home. Spices for teas and chutneys are listed, so tick the ones you already have.</p>
     </div>
   </section>
 
@@ -226,6 +255,7 @@
   </section>
 </main>
 <script src="recipes.js"></script>
+<script src="superfoods.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

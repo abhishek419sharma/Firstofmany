@@ -3,10 +3,12 @@
 // besan, jowar, bajra or sattu.
 //
 // A day is built like this:
-//   Breakfast
-//   Lunch  = dal + sabzi + saag + salad + dahi + roti/rice (+ optional side)
-//   Evening snack
-//   Dinner = dal + sabzi + saag + salad + dahi + roti/rice (+ optional side)
+//   On waking = digestive drink + soaked nuts & seeds
+//   Breakfast = main dish + fruit
+//   Lunch  = dal + sabzi + saag + salad + dahi + chutney + roti/rice
+//            (+ optional side) + digestive tea
+//   Evening snack = snack + fruit
+//   Dinner = same parts as lunch
 // Chicken and fish only ever appear as a dry SIDE (tikka, tandoori, seekh,
 // tawa fish), never in gravy or as the main course. Egg curry is allowed.
 //
@@ -25,7 +27,7 @@ const CATEGORIES = [
   "Meat, Fish & Eggs",
   "Pulses & Soya",
   "Grains & Flour",
-  "Nuts & Seeds",
+  "Nuts, Seeds & Dry Fruits",
   "Spices & Masala",
   "Other",
 ];
@@ -99,17 +101,49 @@ const NUTRITION = {
   "Guava":              ["Fruits", 2.6, 5.4, 1, 68],
   "Pomegranate":        ["Fruits", 1.7, 4, 1.2, 83],
   // Nuts & seeds (good fats)
-  "Almonds":            ["Nuts & Seeds", 21, 12.5, 50, 579, true],
-  "Walnuts":            ["Nuts & Seeds", 15, 6.7, 65, 654, true],
-  "Peanuts":            ["Nuts & Seeds", 26, 8.5, 49, 567, true],
-  "Flax seeds (alsi)":  ["Nuts & Seeds", 18, 27, 42, 534, true],
-  "Pumpkin seeds":      ["Nuts & Seeds", 30, 6, 49, 559, true],
-  "Sesame seeds (til)": ["Nuts & Seeds", 18, 11.8, 50, 573, true],
+  "Almonds":            ["Nuts, Seeds & Dry Fruits", 21, 12.5, 50, 579, true],
+  "Walnuts":            ["Nuts, Seeds & Dry Fruits", 15, 6.7, 65, 654, true],
+  "Peanuts":            ["Nuts, Seeds & Dry Fruits", 26, 8.5, 49, 567, true],
+  "Flax seeds (alsi)":  ["Nuts, Seeds & Dry Fruits", 18, 27, 42, 534, true],
+  "Pumpkin seeds":      ["Nuts, Seeds & Dry Fruits", 30, 6, 49, 559, true],
+  "Sesame seeds (til)": ["Nuts, Seeds & Dry Fruits", 18, 11.8, 50, 573, true],
+  // Added for variety: more fruits, seeds, greens, millets and herbs
+  "Amla (Indian gooseberry)": ["Fruits", 0.9, 3.4, 0.6, 58],
+  "Papaya":             ["Fruits", 0.5, 1.7, 0.3, 43],
+  "Apple":              ["Fruits", 0.3, 2.4, 0.2, 52],
+  "Orange / mosambi":   ["Fruits", 0.9, 2.4, 0.1, 47],
+  "Pear":               ["Fruits", 0.4, 3.1, 0.1, 57],
+  "Kiwi":               ["Fruits", 1.1, 3, 0.5, 61],
+  "Banana":             ["Fruits", 1.1, 2.6, 0.3, 89],
+  "Sunflower seeds":    ["Nuts, Seeds & Dry Fruits", 20.8, 8.6, 51.5, 584, true],
+  "Chia seeds":         ["Nuts, Seeds & Dry Fruits", 16.5, 34.4, 30.7, 486, true],
+  "Pistachios":         ["Nuts, Seeds & Dry Fruits", 20.2, 10.6, 45.3, 562, true],
+  "Cashews":            ["Nuts, Seeds & Dry Fruits", 18.2, 3.3, 43.9, 553, true],
+  "Makhana (fox nuts)": ["Nuts, Seeds & Dry Fruits", 9.7, 14.5, 0.1, 347],
+  "Dates (khajoor)":    ["Nuts, Seeds & Dry Fruits", 2.5, 8, 0.4, 277],
+  "Anjeer (dried fig)": ["Nuts, Seeds & Dry Fruits", 3.3, 9.8, 0.9, 249],
+  "Moringa leaves (sahjan patta)": ["Vegetables", 7.4, 2, 1.4, 64],
+  "Drumstick pods (sahjan phali)": ["Vegetables", 2.1, 3.2, 0.2, 37],
+  "Karela (bitter gourd)": ["Vegetables", 1, 2.8, 0.2, 17],
+  "Sweet potato (shakarkandi)": ["Vegetables", 1.6, 3, 0.1, 86],
+  "Pumpkin (kaddu)":    ["Vegetables", 1, 0.5, 0.1, 26],
+  "Tulsi leaves":       ["Vegetables", 0, 0, 0, 0],
+  "Ragi atta":          ["Grains & Flour", 7.3, 11.5, 1.3, 328],
+  "Rajgira atta (amaranth)": ["Grains & Flour", 13.6, 6.7, 7, 371],
   // Masalas (bought as packs, nutrition negligible)
   "Chole masala":       ["Spices & Masala", 0, 0, 0, 0],
   "Chaat masala":       ["Spices & Masala", 0, 0, 0, 0],
   "Tandoori masala":    ["Spices & Masala", 0, 0, 0, 0],
   "Sambar masala":      ["Spices & Masala", 0, 0, 0, 0],
+  "Jeera (cumin seeds)": ["Spices & Masala", 0, 0, 0, 0],
+  "Ajwain (carom seeds)": ["Spices & Masala", 0, 0, 0, 0],
+  "Saunf (fennel seeds)": ["Spices & Masala", 0, 0, 0, 0],
+  "Methi seeds":        ["Spices & Masala", 0, 0, 0, 0],
+  "Dalchini (cinnamon)": ["Spices & Masala", 0, 0, 0, 0],
+  "Laung (cloves)":     ["Spices & Masala", 0, 0, 0, 0],
+  "Elaichi (green cardamom)": ["Spices & Masala", 0, 0, 0, 0],
+  "Haldi (turmeric powder)": ["Spices & Masala", 0, 0, 0, 0],
+  "Kali mirch (black pepper)": ["Spices & Masala", 0, 0, 0, 0],
 };
 
 // i(name, qty, unit) — unit: g, ml, pcs, bunch, pack
@@ -150,6 +184,9 @@ const RECIPES = {
     { id: "methi-thepla", name: "Methi Thepla (Multigrain & Besan) with Hung Curd", diet: "veg", ingredients: [
       i("Multigrain atta", 70), i("Besan", 20), i("Methi leaves", 40), i("Flax seeds (alsi)", 10),
       i("Hung curd (chakka)", 150), i("Green chilli", 1, "pcs")] },
+    { id: "ragi-chilla", name: "Ragi-Besan Chilla with Paneer & Hung Curd", diet: "veg", ingredients: [
+      i("Ragi atta", 40), i("Besan", 30), i("Paneer", 50), i("Hung curd (chakka)", 100),
+      i("Spinach (palak)", 40), i("Onion", 30), ...herbs()] },
     { id: "masala-omelette", name: "Masala Omelette with Methi Paratha", diet: "egg", ingredients: [
       i("Eggs", 4, "pcs"), i("Multigrain atta", 60), i("Methi leaves", 30), i("Onion", 30),
       i("Tomato", 30), ...herbs()] },
@@ -172,6 +209,9 @@ const RECIPES = {
     { id: "sprouts-paneer-chaat", name: "Sprouts, Kala Chana & Paneer Chaat with Peanuts", diet: "veg", ingredients: [
       i("Moong sprouts", 100), i("Kala chana", 30), i("Paneer", 60), i("Peanuts", 15), i("Onion", 30),
       i("Tomato", 40), i("Lemon", 0.5, "pcs"), i("Chaat masala", 1, "pack")] },
+    { id: "makhana-chaat", name: "Roasted Makhana & Chana Chaat with Peanuts", diet: "veg", ingredients: [
+      i("Makhana (fox nuts)", 30), i("Roasted chana", 40), i("Peanuts", 10), i("Onion", 20),
+      i("Tomato", 30), i("Lemon", 0.5, "pcs"), i("Chaat masala", 1, "pack")] },
     { id: "egg-chaat", name: "Boiled Egg Chaat & Guava", diet: "egg", ingredients: [
       i("Eggs", 3, "pcs"), i("Guava", 150), i("Onion", 20), i("Chaat masala", 1, "pack")] },
   ],
@@ -221,6 +261,15 @@ const RECIPES = {
       i("Cabbage", 150), i("Green peas", 60), i("Onion", 30), i("Green chilli", 1, "pcs")] },
     { id: "beans-poriyal", name: "French Beans Poriyal with Coconut", diet: "veg", ingredients: [
       i("French beans", 180), i("Coconut (fresh)", 15), i("Curry leaves", 0.25, "bunch"), i("Onion", 20)] },
+    { id: "karela", name: "Karela Sabzi (bitter gourd)", diet: "veg", ingredients: [
+      i("Karela (bitter gourd)", 150), i("Onion", 50), i("Besan", 10), i("Green chilli", 1, "pcs")] },
+    { id: "sahjan-phali", name: "Sahjan (Drumstick) Phali Sabzi", diet: "veg", ingredients: [
+      i("Drumstick pods (sahjan phali)", 150), i("Tomato", 40), i("Onion", 30), i("Coconut (fresh)", 10)] },
+    { id: "kaddu", name: "Kaddu (Pumpkin) Sabzi", diet: "veg", ingredients: [
+      i("Pumpkin (kaddu)", 200), i("Methi seeds", 1, "pack"), i("Green chilli", 1, "pcs")] },
+    { id: "shakarkandi", name: "Shakarkandi (Sweet Potato) Sabzi", diet: "veg", ingredients: [
+      i("Sweet potato (shakarkandi)", 150), i("Green peas", 40), i("Green chilli", 1, "pcs"),
+      i("Coriander", 0.25, "bunch")] },
     { id: "mushroom-matar", name: "Mushroom Matar", diet: "veg", ingredients: [
       i("Mushrooms", 150), i("Green peas", 60), i("Onion", 40), i("Tomato", 40), i("Ginger", 5)] },
     { id: "matar-paneer", name: "Matar Paneer", diet: "veg", ingredients: [
@@ -247,6 +296,9 @@ const RECIPES = {
       i("Amaranth leaves (chaulai)", 200), i("Onion", 30), ...tadka()] },
     { id: "palak-paneer", name: "Palak Paneer (light)", diet: "veg", ingredients: [
       i("Spinach (palak)", 180), i("Paneer", 70), i("Onion", 30), i("Tomato", 30), i("Garlic", 5)] },
+    { id: "sahjan-saag", name: "Sahjan Patta (Moringa Leaf) Saag", diet: "veg", ingredients: [
+      i("Moringa leaves (sahjan patta)", 150), i("Onion", 20), i("Garlic", 5), i("Coconut (fresh)", 10),
+      i("Green chilli", 1, "pcs")] },
     { id: "methi-matar", name: "Methi Matar", diet: "veg", ingredients: [
       i("Methi leaves", 100), i("Green peas", 60), i("Onion", 30), i("Garlic", 5)] },
   ],
@@ -300,7 +352,110 @@ const RECIPES = {
       i("Multigrain atta", 30), i("Besan", 30)] },
     { id: "jowar-roti", name: "2 Jowar Rotis", diet: "veg", ingredients: [i("Jowar atta", 55)] },
     { id: "bajra-roti", name: "2 Bajra Rotis", diet: "veg", ingredients: [i("Bajra atta", 55)] },
+    { id: "ragi-roti", name: "2 Ragi Rotis", diet: "veg", ingredients: [i("Ragi atta", 55)] },
+    { id: "rajgira-roti", name: "2 Rajgira-Multigrain Rotis", diet: "veg", ingredients: [
+      i("Rajgira atta (amaranth)", 30), i("Multigrain atta", 30)] },
     { id: "brown-rice", name: "Jeera Brown Rice", diet: "veg", ingredients: [i("Brown rice", 60)] },
+  ],
+
+  // ---- Extras: on waking, fruit, chutney, digestive tea ----
+
+  wake: [
+    { id: "jas-water", name: "Jeera-Ajwain-Saunf Water", diet: "veg", ingredients: [
+      i("Jeera (cumin seeds)", 1, "pack"), i("Ajwain (carom seeds)", 1, "pack"), i("Saunf (fennel seeds)", 1, "pack")] },
+    { id: "methi-water", name: "Methi Dana Water (soaked overnight)", diet: "veg", ingredients: [
+      i("Methi seeds", 1, "pack")] },
+    { id: "lemon-ginger-water", name: "Warm Lemon-Ginger Water", diet: "veg", ingredients: [
+      i("Lemon", 0.5, "pcs"), i("Ginger", 5)] },
+    { id: "amla-shot", name: "Amla-Ginger Shot", diet: "veg", ingredients: [
+      i("Amla (Indian gooseberry)", 40), i("Ginger", 5)] },
+    { id: "haldi-water", name: "Haldi-Kali Mirch Warm Water", diet: "veg", ingredients: [
+      i("Haldi (turmeric powder)", 1, "pack"), i("Kali mirch (black pepper)", 1, "pack"), i("Lemon", 0.5, "pcs")] },
+    { id: "chia-water", name: "Chia-Lemon Water", diet: "veg", ingredients: [
+      i("Chia seeds", 10), i("Lemon", 0.5, "pcs")] },
+  ],
+
+  nuts: [
+    { id: "almond-walnut", name: "Soaked Almonds & Walnuts", diet: "veg", ingredients: [
+      i("Almonds", 10), i("Walnuts", 10)] },
+    { id: "almond-seeds", name: "Soaked Almonds with Pumpkin & Sunflower Seeds", diet: "veg", ingredients: [
+      i("Almonds", 8), i("Pumpkin seeds", 8), i("Sunflower seeds", 8)] },
+    { id: "walnut-alsi-til", name: "Walnuts with Roasted Alsi & Til", diet: "veg", ingredients: [
+      i("Walnuts", 10), i("Flax seeds (alsi)", 8), i("Sesame seeds (til)", 6)] },
+    { id: "pista-anjeer", name: "Pistachios & Soaked Anjeer", diet: "veg", ingredients: [
+      i("Pistachios", 12), i("Anjeer (dried fig)", 30)] },
+    { id: "makhana-seeds", name: "Roasted Makhana with Pumpkin Seeds", diet: "veg", ingredients: [
+      i("Makhana (fox nuts)", 20), i("Pumpkin seeds", 10)] },
+    { id: "cashew-dates", name: "Cashews, Almonds & Dates", diet: "veg", ingredients: [
+      i("Cashews", 8), i("Almonds", 8), i("Dates (khajoor)", 20)] },
+    { id: "seed-mix", name: "Seed Mix (Alsi, Sunflower, Pumpkin, Til)", diet: "veg", ingredients: [
+      i("Flax seeds (alsi)", 6), i("Sunflower seeds", 6), i("Pumpkin seeds", 6), i("Sesame seeds (til)", 6)] },
+  ],
+
+  fruit: [
+    { id: "guava", name: "Guava", diet: "veg", ingredients: [i("Guava", 150)] },
+    { id: "papaya", name: "Papaya", diet: "veg", ingredients: [i("Papaya", 200)] },
+    { id: "pomegranate", name: "Pomegranate", diet: "veg", ingredients: [i("Pomegranate", 100)] },
+    { id: "apple", name: "Apple", diet: "veg", ingredients: [i("Apple", 150)] },
+    { id: "orange", name: "Orange / Mosambi", diet: "veg", ingredients: [i("Orange / mosambi", 150)] },
+    { id: "pear", name: "Pear", diet: "veg", ingredients: [i("Pear", 150)] },
+    { id: "kiwi", name: "Kiwi", diet: "veg", ingredients: [i("Kiwi", 150)] },
+    { id: "banana", name: "Banana", diet: "veg", ingredients: [i("Banana", 100)] },
+    { id: "amla-pepper", name: "Fresh Amla with Black Pepper", diet: "veg", ingredients: [
+      i("Amla (Indian gooseberry)", 60), i("Kali mirch (black pepper)", 1, "pack")] },
+    { id: "fruit-chaat", name: "Fruit Chaat (papaya, pomegranate, guava)", diet: "veg", ingredients: [
+      i("Papaya", 80), i("Pomegranate", 50), i("Guava", 60), i("Lemon", 0.5, "pcs"),
+      i("Chaat masala", 1, "pack")] },
+  ],
+
+  // Chutneys have no added salt: the flavour comes from lemon, roasted jeera,
+  // ginger and chilli. Add a pinch at the table if you want it.
+  chutney: [
+    { id: "amla-chutney", name: "Amla Chutney (no salt)", diet: "veg", ingredients: [
+      i("Amla (Indian gooseberry)", 50), i("Coriander", 0.25, "bunch"), i("Ginger", 5),
+      i("Green chilli", 1, "pcs"), i("Jeera (cumin seeds)", 1, "pack")] },
+    { id: "mint-chutney", name: "Mint-Coriander Chutney (lemon, no salt)", diet: "veg", ingredients: [
+      i("Mint (pudina)", 0.25, "bunch"), i("Coriander", 0.5, "bunch"), i("Green chilli", 1, "pcs"),
+      i("Lemon", 0.5, "pcs"), i("Ginger", 5), i("Jeera (cumin seeds)", 1, "pack")] },
+    { id: "coconut-chutney", name: "Coconut-Mint Chutney (no salt)", diet: "veg", ingredients: [
+      i("Coconut (fresh)", 20), i("Mint (pudina)", 0.25, "bunch"), i("Roasted chana", 8),
+      i("Green chilli", 1, "pcs"), i("Lemon", 0.5, "pcs")] },
+    { id: "alsi-chutney", name: "Roasted Alsi (Flaxseed) Chutney (no salt)", diet: "veg", ingredients: [
+      i("Flax seeds (alsi)", 12), i("Garlic", 3), i("Green chilli", 1, "pcs"), i("Lemon", 0.5, "pcs"),
+      i("Jeera (cumin seeds)", 1, "pack")] },
+    { id: "til-chutney", name: "Roasted Til-Coriander Chutney (no salt)", diet: "veg", ingredients: [
+      i("Sesame seeds (til)", 10), i("Coriander", 0.25, "bunch"), i("Green chilli", 1, "pcs"),
+      i("Lemon", 0.5, "pcs")] },
+    { id: "curry-leaf-chutney", name: "Curry Leaf Chutney (no salt)", diet: "veg", ingredients: [
+      i("Curry leaves", 0.5, "bunch"), i("Coconut (fresh)", 10), i("Roasted chana", 8),
+      i("Green chilli", 1, "pcs"), i("Lemon", 0.5, "pcs")] },
+    { id: "tomato-chutney", name: "Tomato-Garlic Chutney (no salt)", diet: "veg", ingredients: [
+      i("Tomato", 100), i("Garlic", 5), i("Green chilli", 1, "pcs"), i("Coriander", 0.25, "bunch")] },
+    { id: "sahjan-chutney", name: "Sahjan Patta (Moringa) Chutney (no salt)", diet: "veg", ingredients: [
+      i("Moringa leaves (sahjan patta)", 40), i("Coconut (fresh)", 10), i("Garlic", 3),
+      i("Green chilli", 1, "pcs"), i("Lemon", 0.5, "pcs")] },
+    { id: "beet-chutney", name: "Beetroot-Ginger Chutney (no salt)", diet: "veg", ingredients: [
+      i("Beetroot", 60), i("Ginger", 5), i("Green chilli", 1, "pcs"), i("Lemon", 0.5, "pcs")] },
+  ],
+
+  // Unsweetened digestive teas, a traditional after-meal habit.
+  tea: [
+    { id: "jas-tea", name: "Jeera-Ajwain-Saunf Tea", diet: "veg", ingredients: [
+      i("Jeera (cumin seeds)", 1, "pack"), i("Ajwain (carom seeds)", 1, "pack"), i("Saunf (fennel seeds)", 1, "pack")] },
+    { id: "ginger-mint-tea", name: "Ginger-Mint Tea", diet: "veg", ingredients: [
+      i("Ginger", 10), i("Mint (pudina)", 0.25, "bunch")] },
+    { id: "tulsi-kadha", name: "Tulsi-Ginger Kadha", diet: "veg", ingredients: [
+      i("Tulsi leaves", 0.25, "bunch"), i("Ginger", 10), i("Kali mirch (black pepper)", 1, "pack")] },
+    { id: "saunf-elaichi-tea", name: "Saunf-Elaichi Tea", diet: "veg", ingredients: [
+      i("Saunf (fennel seeds)", 1, "pack"), i("Elaichi (green cardamom)", 1, "pack")] },
+    { id: "dalchini-tea", name: "Dalchini-Laung-Ginger Tea", diet: "veg", ingredients: [
+      i("Dalchini (cinnamon)", 1, "pack"), i("Laung (cloves)", 1, "pack"), i("Ginger", 10)] },
+    { id: "ajwain-lemon-tea", name: "Ajwain-Ginger-Lemon Tea", diet: "veg", ingredients: [
+      i("Ajwain (carom seeds)", 1, "pack"), i("Ginger", 10), i("Lemon", 0.5, "pcs")] },
+    { id: "mint-saunf-tea", name: "Mint-Saunf Tea", diet: "veg", ingredients: [
+      i("Mint (pudina)", 0.25, "bunch"), i("Saunf (fennel seeds)", 1, "pack")] },
+    { id: "haldi-ginger-tea", name: "Turmeric-Ginger Tea", diet: "veg", ingredients: [
+      i("Haldi (turmeric powder)", 1, "pack"), i("Ginger", 10), i("Kali mirch (black pepper)", 1, "pack")] },
   ],
 
   // Chicken and fish only as a dry side, never in gravy. Egg curry is fine.
@@ -338,6 +493,7 @@ const RECIPES = {
 // The day's slots, in serving order. "pool" says which list a slot picks
 // from; "group" is the meal it belongs to; "part" is its role in a thali.
 const MEAL_GROUPS = [
+  { key: "morning",   label: "On waking",      emoji: "🌅" },
   { key: "breakfast", label: "Breakfast",      emoji: "🍳" },
   { key: "lunch",     label: "Lunch",          emoji: "🍛" },
   { key: "snack",     label: "Evening snack",  emoji: "🥤" },
@@ -345,22 +501,30 @@ const MEAL_GROUPS = [
 ];
 
 const SLOTS = [
-  { key: "breakfast",   group: "breakfast", part: "main",   label: "Breakfast",          pool: "breakfast" },
-  { key: "lunchDal",    group: "lunch",     part: "dal",    label: "Dal",                pool: "dal" },
-  { key: "lunchSabzi",  group: "lunch",     part: "sabzi",  label: "Sabzi",              pool: "sabzi" },
-  { key: "lunchSaag",   group: "lunch",     part: "saag",   label: "Saag / greens",      pool: "saag" },
-  { key: "lunchSalad",  group: "lunch",     part: "salad",  label: "Salad",              pool: "salad" },
-  { key: "lunchDahi",   group: "lunch",     part: "dahi",   label: "Dahi / raita",       pool: "dahi" },
-  { key: "lunchStaple", group: "lunch",     part: "staple", label: "Roti / rice",        pool: "staple" },
-  { key: "lunchSide",   group: "lunch",     part: "side",   label: "Chicken / fish / egg side", pool: "side" },
-  { key: "snack",       group: "snack",     part: "main",   label: "Evening snack",      pool: "snack" },
-  { key: "dinnerDal",    group: "dinner",   part: "dal",    label: "Dal",                pool: "dal" },
-  { key: "dinnerSabzi",  group: "dinner",   part: "sabzi",  label: "Sabzi",              pool: "sabzi" },
-  { key: "dinnerSaag",   group: "dinner",   part: "saag",   label: "Saag / greens",      pool: "saag" },
-  { key: "dinnerSalad",  group: "dinner",   part: "salad",  label: "Salad",              pool: "salad" },
-  { key: "dinnerDahi",   group: "dinner",   part: "dahi",   label: "Dahi / raita",       pool: "dahi" },
-  { key: "dinnerStaple", group: "dinner",   part: "staple", label: "Roti / rice",        pool: "staple" },
-  { key: "dinnerSide",   group: "dinner",   part: "side",   label: "Chicken / fish / egg side", pool: "side" },
+  { key: "wakeDrink",     group: "morning",   part: "drink",   label: "Drink",                 pool: "wake" },
+  { key: "wakeNuts",      group: "morning",   part: "nuts",    label: "Soaked nuts & seeds",   pool: "nuts" },
+  { key: "breakfast",     group: "breakfast", part: "main",    label: "Main dish",             pool: "breakfast" },
+  { key: "breakfastFruit", group: "breakfast", part: "fruit",  label: "Fruit",                 pool: "fruit" },
+  { key: "lunchDal",      group: "lunch",     part: "dal",     label: "Dal",                   pool: "dal" },
+  { key: "lunchSabzi",    group: "lunch",     part: "sabzi",   label: "Sabzi",                 pool: "sabzi" },
+  { key: "lunchSaag",     group: "lunch",     part: "saag",    label: "Saag / greens",         pool: "saag" },
+  { key: "lunchSalad",    group: "lunch",     part: "salad",   label: "Salad",                 pool: "salad" },
+  { key: "lunchDahi",     group: "lunch",     part: "dahi",    label: "Dahi / raita",          pool: "dahi" },
+  { key: "lunchChutney",  group: "lunch",     part: "chutney", label: "Chutney",               pool: "chutney" },
+  { key: "lunchStaple",   group: "lunch",     part: "staple",  label: "Roti / rice",           pool: "staple" },
+  { key: "lunchSide",     group: "lunch",     part: "side",    label: "Chicken / fish / egg side", pool: "side" },
+  { key: "lunchTea",      group: "lunch",     part: "tea",     label: "Digestive tea",         pool: "tea" },
+  { key: "snack",         group: "snack",     part: "main",    label: "Snack",                 pool: "snack" },
+  { key: "snackFruit",    group: "snack",     part: "fruit",   label: "Fruit",                 pool: "fruit" },
+  { key: "dinnerDal",     group: "dinner",    part: "dal",     label: "Dal",                   pool: "dal" },
+  { key: "dinnerSabzi",   group: "dinner",    part: "sabzi",   label: "Sabzi",                 pool: "sabzi" },
+  { key: "dinnerSaag",    group: "dinner",    part: "saag",    label: "Saag / greens",         pool: "saag" },
+  { key: "dinnerSalad",   group: "dinner",    part: "salad",   label: "Salad",                 pool: "salad" },
+  { key: "dinnerDahi",    group: "dinner",    part: "dahi",    label: "Dahi / raita",          pool: "dahi" },
+  { key: "dinnerChutney", group: "dinner",    part: "chutney", label: "Chutney",               pool: "chutney" },
+  { key: "dinnerStaple",  group: "dinner",    part: "staple",  label: "Roti / rice",           pool: "staple" },
+  { key: "dinnerSide",    group: "dinner",    part: "side",    label: "Chicken / fish / egg side", pool: "side" },
+  { key: "dinnerTea",     group: "dinner",    part: "tea",     label: "Digestive tea",         pool: "tea" },
 ];
 
 // Used to stop one protein from showing up too often in a day.

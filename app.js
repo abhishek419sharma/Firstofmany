@@ -2,7 +2,8 @@
 // targets, a shopping list and WhatsApp sharing.
 // Everything runs in the browser; choices are kept in localStorage.
 
-const STORAGE_KEY = "meal-planner:v4";
+const STORAGE_KEY = "meal-planner:v5";
+const DEFAULT_KCAL = 2800;
 const GOOD_FAT_TARGET = 20; // grams per person per day from nuts, seeds and fish
 
 // How many dishes in one day may use the same main protein before the
@@ -14,20 +15,25 @@ const PROTEIN_LIMIT = { Paneer: 3, Soya: 3, Eggs: 4, Chicken: 1, Fish: 1 };
 function loadState() {
   let saved = null;
   let old = null;
+  let oldKey = null;
   try {
     saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    // Menus from earlier versions used different dishes, so only keep their settings.
-    if (!saved) old = JSON.parse(localStorage.getItem("meal-planner:v3")) ||
-      JSON.parse(localStorage.getItem("meal-planner:v2"));
+    // Menus from earlier versions used different slots, so only keep their settings.
+    if (!saved) {
+      for (const key of ["meal-planner:v4", "meal-planner:v3", "meal-planner:v2"]) {
+        const v = JSON.parse(localStorage.getItem(key));
+        if (v) { old = v; oldKey = key; break; }
+      }
+    }
   } catch (e) {
     saved = null;
   }
   const carried = Object.assign({}, old && old.settings);
   delete carried.whey;
-  delete carried.diet; // the menu structure changed, so the diet is chosen again
-  if (carried.kcal === 2400) delete carried.kcal; // old default; the new default is higher
+  if (oldKey !== "meal-planner:v4") delete carried.diet; // older menus had a different diet structure
+  if (carried.kcal === 2400 || carried.kcal === 2600) delete carried.kcal; // old defaults
   const settings = Object.assign(
-    { people: 1, diet: "nonveg", phone: "", protein: 150, fibre: 30, kcal: 2600 },
+    { people: 1, diet: "nonveg", phone: "", protein: 150, fibre: 30, kcal: DEFAULT_KCAL },
     carried, saved && saved.settings);
   return { settings, days: (saved && saved.days) || {} };
 }
@@ -110,12 +116,18 @@ function slotVisible(slot) {
   return candidates(slot.pool).length > 1;
 }
 
-// Pairs of lunch/dinner slots with the same role (dal with dal, and so on).
-const PAIRS = ["dal", "sabzi", "saag", "salad", "dahi", "staple", "side"].map((part) => ({
+// Pairs of slots that should not repeat a dish: lunch vs dinner parts with the
+// same role (dal with dal, and so on), and the two fruits.
+const PAIRS = ["dal", "sabzi", "saag", "salad", "dahi", "staple", "side", "chutney", "tea"].map((part) => ({
   a: SLOTS.findIndex((s) => s.group === "lunch" && s.part === part),
   b: SLOTS.findIndex((s) => s.group === "dinner" && s.part === part),
   hard: part !== "staple" && part !== "side",
 }));
+PAIRS.push({
+  a: SLOTS.findIndex((s) => s.key === "breakfastFruit"),
+  b: SLOTS.findIndex((s) => s.key === "snackFruit"),
+  hard: true,
+});
 
 // ---------- nutrition & planning ----------
 
@@ -128,9 +140,21 @@ function totals(recipes) {
   return t;
 }
 
+// What was eaten yesterday, so today can avoid repeats and add new superfoods.
+function dayContext(date) {
+  const yesterday = state.days[shiftDate(date, -1)] || {};
+  const ySf = new Set();
+  SLOTS.forEach((s) => {
+    const r = yesterday[s.key] && findRecipe(s.pool, yesterday[s.key]);
+    if (r) r.superfoods.forEach((n) => ySf.add(n));
+  });
+  return { yesterday, ySf };
+}
+
 // Lower is better. Heavily penalises missing protein / fibre / good-fat targets,
-// penalises going over calories, repeats and too much of one protein.
-function score(plan, yesterday, jitter) {
+// penalises going over calories, repeats and too much of one protein, and
+// rewards a wide range of superfoods.
+function score(plan, ctx, jitter) {
   const s = state.settings;
   const t = totals(plan);
   let sc = 0;
@@ -138,9 +162,7 @@ function score(plan, yesterday, jitter) {
   sc += 8 * Math.max(0, s.fibre + 1 - t.fibre);
   sc += 10 * Math.max(0, GOOD_FAT_TARGET + 2 - t.goodFat);
   sc += 1.5 * Math.max(0, t.kcal - (s.kcal - 10)) + 0.01 * t.kcal; // stay under the calorie limit, lighter is slightly better
-  // Soft caps so the day doesn't overshoot by a lot.
-  sc += 0.3 * Math.max(0, t.protein - (s.protein + 40));
-  sc += 1 * Math.max(0, t.fibre - (s.fibre + 15));
+  sc += 0.3 * Math.max(0, t.protein - (s.protein + 40)); // don't overshoot protein by a lot
   // Lunch and dinner shouldn't repeat a dish.
   PAIRS.forEach(({ a, b, hard }) => {
     if (plan[a].id === plan[b].id && plan[a].id !== "none") sc += hard ? 1000 : 4;
@@ -151,11 +173,17 @@ function score(plan, yesterday, jitter) {
   Object.keys(counts).forEach((g) => {
     sc += 6 * Math.max(0, counts[g] - (PROTEIN_LIMIT[g] || 3));
   });
+  // Reward many superfoods in the day, and ones that were not eaten yesterday.
+  const sf = new Set();
+  plan.forEach((r) => r.superfoods.forEach((n) => sf.add(n)));
+  let fresh = 0;
+  sf.forEach((n) => { if (!ctx.ySf.has(n)) fresh++; });
+  sc -= 0.6 * Math.min(sf.size, 20) + 0.6 * Math.min(fresh, 14);
   plan.forEach((r, idx) => {
     // Chicken / fish / egg side is expected at lunch and dinner unless the diet is veg.
     if (r.id === "none" && s.diet !== "veg") sc += 40;
     // Avoid repeating yesterday's dishes.
-    if (r.id !== "none" && yesterday[SLOTS[idx].key] === r.id) sc += 8;
+    if (r.id !== "none" && ctx.yesterday[SLOTS[idx].key] === r.id) sc += 8;
     // Per-day random preference so menus vary.
     if (jitter) sc += jitter[r.id] || 0;
   });
@@ -170,14 +198,14 @@ function makeJitter(rand) {
 
 // Build a full day: random starts, then improve one slot at a time.
 function planDay(date, rand) {
-  const yesterday = state.days[shiftDate(date, -1)] || {};
+  const ctx = dayContext(date);
   const jitter = makeJitter(rand);
   const pools = SLOTS.map((s) => candidates(s.pool));
   let best = null;
   let bestScore = Infinity;
-  for (let start = 0; start < 20; start++) {
+  for (let start = 0; start < 14; start++) {
     let plan = pools.map((list) => list[Math.floor(rand() * list.length)]);
-    let current = score(plan, yesterday, jitter);
+    let current = score(plan, ctx, jitter);
     for (let pass = 0; pass < 6; pass++) {
       let improved = false;
       SLOTS.forEach((_, idx) => {
@@ -185,7 +213,7 @@ function planDay(date, rand) {
           if (r === plan[idx]) return;
           const trial = plan.slice();
           trial[idx] = r;
-          const sc = score(trial, yesterday, jitter);
+          const sc = score(trial, ctx, jitter);
           if (sc < current - 1e-9) { plan = trial; current = sc; improved = true; }
         });
       });
@@ -222,14 +250,14 @@ function replanToday() {
 // Swap one dish for a different one that still keeps the day on target.
 function shuffleSlot(slotIdx) {
   const day = getDay(currentDate);
-  const yesterday = state.days[shiftDate(currentDate, -1)] || {};
+  const ctx = dayContext(currentDate);
   const plan = SLOTS.map((s) => slotRecipe(day, s));
   const options = candidates(SLOTS[slotIdx].pool)
     .filter((r) => r.id !== plan[slotIdx].id)
     .map((r) => {
       const trial = plan.slice();
       trial[slotIdx] = r;
-      return { r, sc: score(trial, yesterday, null) };
+      return { r, sc: score(trial, ctx, null) };
     })
     .sort((a, b) => a.sc - b.sc);
   if (!options.length) return;
@@ -418,6 +446,19 @@ function nutritionChips(n, withKcal) {
     withKcal ? el("span", { class: "chip muted" }, `${Math.round(n.kcal)} kcal`) : null);
 }
 
+const POOL_NOTE = { wake: "Unsweetened", tea: "Unsweetened", chutney: "No added salt" };
+
+// The small grey line under a dish: a note, then nutrition when it is worth showing.
+function rowSub(slot, r) {
+  if (r.id === "none") return null;
+  const bits = [];
+  if (POOL_NOTE[slot.pool]) bits.push(POOL_NOTE[slot.pool]);
+  if (r.nutrition.kcal >= 20) {
+    bits.push(`${Math.round(r.nutrition.protein)} g protein · ${Math.round(r.nutrition.fibre)} g fibre · ${Math.round(r.nutrition.kcal)} kcal`);
+  }
+  return bits.length ? el("div", { class: "row-sub" }, bits.join(" · ")) : null;
+}
+
 // A dropdown with the current dish plus a Shuffle button.
 function slotControls(day, slot, idx) {
   const select = el("select", {
@@ -463,8 +504,7 @@ function renderMenu(day) {
             el("span", {}, slot.label),
             withBadge ? el("span", { class: `badge ${r.diet}` }, DIET_BADGE[r.diet]) : null),
           slotControls(day, slot, idx),
-          r.id === "none" ? null : el("div", { class: "row-sub" },
-            `${Math.round(r.nutrition.protein)} g protein · ${Math.round(r.nutrition.fibre)} g fibre · ${Math.round(r.nutrition.kcal)} kcal`)));
+          rowSub(slot, r)));
       });
     }
 
@@ -477,6 +517,49 @@ function renderMenu(day) {
             el("li", {}, `${ing.name} – ${formatQty(ing.unit === "pack" ? ing.qty : ing.qty * people, ing.unit)}`)))))));
     wrap.append(card);
   });
+}
+
+function sfItem(name, dishes) {
+  const f = SUPERFOODS[name];
+  return el("li", {},
+    el("div", { class: "sf-head" },
+      el("strong", {}, name),
+      el("span", { class: `tag ${f.kind}` }, f.kind === "fact" ? "Nutrition fact" : "Traditional use")),
+    el("div", { class: "sf-why" }, f.why),
+    dishes ? el("div", { class: "sf-in" }, `In: ${dishes.join(", ")}`) : null);
+}
+
+function renderSuperfoods(day) {
+  const used = new Map(); // superfood -> dishes it is in today
+  const plants = new Set();
+  SLOTS.forEach((sl) => {
+    const r = slotRecipe(day, sl);
+    r.ingredients.forEach((ing) => {
+      if (isPlantFood(ing.name)) plants.add(ing.name);
+      if (SUPERFOODS[ing.name]) {
+        if (!used.has(ing.name)) used.set(ing.name, []);
+        if (!used.get(ing.name).includes(r.name)) used.get(ing.name).push(r.name);
+      }
+    });
+  });
+  $("#sf-count").textContent = `${used.size} superfoods · ${plants.size} plant foods`;
+  const chips = $("#sf-chips");
+  chips.innerHTML = "";
+  Array.from(used.keys()).forEach((n) => chips.append(el("span", { class: "chip" }, n)));
+  const today = $("#sf-today");
+  const rest = $("#sf-all");
+  today.innerHTML = "";
+  rest.innerHTML = "";
+  SUPERFOOD_GROUPS.forEach((g) => {
+    const names = Object.keys(SUPERFOODS).filter((n) => SUPERFOODS[n].group === g);
+    const inToday = names.filter((n) => used.has(n));
+    const others = names.filter((n) => !used.has(n));
+    if (inToday.length) today.append(el("h4", {}, g), el("ul", { class: "sf" }, inToday.map((n) => sfItem(n, used.get(n)))));
+    if (others.length) rest.append(el("h4", {}, g), el("ul", { class: "sf" }, others.map((n) => sfItem(n, null))));
+  });
+  const notes = $("#sf-notes");
+  notes.innerHTML = "";
+  SUPERFOOD_NOTES.forEach((t) => notes.append(el("li", {}, t)));
 }
 
 function renderList(day) {
@@ -528,6 +611,7 @@ function render() {
   $("#t-kcal").value = s.kcal;
   renderTargets(day);
   renderMenu(day);
+  renderSuperfoods(day);
   renderList(day);
 
   const menu = menuText(day);

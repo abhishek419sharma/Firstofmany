@@ -13,8 +13,8 @@
       --bg: #f4f6f2; --card: #ffffff; --text: #1b211d; --muted: #646d66;
       --line: #dfe4dd; --accent: #1f7a4d; --accent-soft: #e2f0e7;
       --wa: #25d366; --wa-text: #0b3d22;
-      --veg: #2e8b57; --egg: #a87500; --nonveg: #b8412c;
-      --ok: #1f7a4d; --near: #a87500; --low: #b8412c; --salad: #f3f9f2;
+      --veg: #2e8b57; --egg: #8a5f00; --nonveg: #b8412c;
+      --ok: #1f7a4d; --near: #8a5f00; --low: #b8412c; --salad: #f3f9f2;
       --font-display: "Bricolage Grotesque", system-ui, sans-serif;
       --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     }
@@ -32,6 +32,7 @@
       --veg: #5cc48e; --egg: #e0b040; --nonveg: #ef7a62;
         --ok: #5cc48e; --near: #e0b040; --low: #ef7a62; --salad: #1a251d; color-scheme: dark;
     }
+    [hidden] { display: none !important; }
     * { box-sizing: border-box; }
     body {
       margin: 0; background: var(--bg); color: var(--text);
@@ -89,7 +90,7 @@
     .controls + .controls { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
     .group-title { grid-column: 1 / -1; font-size: .8rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
     label.check { flex-direction: row; align-items: center; gap: 8px; color: var(--text); font-size: .9rem; }
-    label.check input { width: 20px; height: 20px; min-height: 0; accent-color: var(--accent); }
+    label.check input { flex: none; width: 20px; height: 20px; min-height: 0; accent-color: var(--accent); }
 
     #targets { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
     .target-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; column-gap: 6px; }
@@ -132,6 +133,20 @@
     .fixed-dish { padding: 9px 10px; min-height: 40px; border: 1px dashed var(--line); border-radius: 10px; font-weight: 600; background: var(--bg); }
     details.rules { margin-bottom: 0; }
     details.rules > summary { font-weight: 600; }
+    .btn.sm { min-height: 40px; padding: 6px 14px; font-weight: 600; }
+    .head-actions { display: flex; gap: 6px; align-items: center; }
+    ul.summary { list-style: none; margin: 12px 0 0; padding: 0; }
+    ul.summary li { display: grid; grid-template-columns: minmax(84px, 34%) 1fr; gap: 2px 10px; padding: 6px 0; border-top: 1px solid var(--line); font-size: .92rem; }
+    ul.summary .k { color: var(--muted); font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; padding-top: 3px; }
+    ul.summary .v { font-weight: 600; min-width: 0; }
+    ul.summary .v.dim { font-weight: 400; color: var(--muted); }
+    .quick-send { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin-top: 12px; }
+    .field-hint { font-size: .78rem; color: var(--muted); }
+    .field-hint.warn { color: var(--low); }
+    details.settings > summary { font-weight: 600; }
+    .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+      width: max-content; max-width: min(92vw, 420px); background: var(--text); color: var(--bg); padding: 10px 14px;
+      border-radius: 10px; font-size: .9rem; z-index: 20; box-shadow: 0 6px 24px rgba(0,0,0,.25); }
     .ing-group { margin-top: 10px; }
     .ing-group strong { font-size: .9rem; }
 
@@ -140,9 +155,11 @@
     ul.items { list-style: none; margin: 0; padding: 0; }
     ul.items li { display: flex; align-items: center; border-bottom: 1px solid var(--line); }
     ul.items li:last-child { border-bottom: 0; }
-    ul.items label { flex: 1; display: grid; grid-template-columns: auto 1fr; column-gap: 10px; padding: 8px 0; cursor: pointer; }
-    ul.items input { width: 20px; height: 20px; min-height: 0; grid-row: span 2; align-self: center; accent-color: var(--accent); }
+    ul.items label { flex: 1; display: grid; grid-template-columns: auto 1fr auto; column-gap: 10px; padding: 8px 0; cursor: pointer; }
+    ul.items label > small:not(.inline) { grid-column: 2 / 4; }
+    ul.items input { width: 22px; height: 22px; min-height: 0; grid-row: span 2; align-self: center; accent-color: var(--accent); }
     ul.items small { color: var(--muted); font-size: .78rem; }
+    ul.items small.inline { grid-row: 1; grid-column: 3; align-self: center; white-space: nowrap; }
     ul.items li.have .name { text-decoration: line-through; color: var(--muted); }
     .icon { background: none; border: 0; color: var(--muted); cursor: pointer; padding: 8px; }
     .hint { color: var(--muted); font-size: .85rem; margin: 10px 0 0; }
@@ -193,11 +210,17 @@
           <option value="nonveg">Non-veg (chicken / fish as dry side)</option>
         </select>
       </label>
-      <label>WhatsApp number (optional)
-        <input type="tel" id="phone" placeholder="e.g. 919876543210">
-      </label>
     </div>
-    <div class="controls">
+    <div class="quick-send">
+      <a class="btn wa" id="top-menu" data-send="1" target="_blank" rel="noopener">Send day's menu</a>
+      <a class="btn wa" id="top-order" data-send="1" target="_blank" rel="noopener">Send order list</a>
+    </div>
+    <p class="hint" id="send-target" style="margin-bottom: 0"></p>
+  </div>
+
+  <details class="card settings" style="margin-top: 14px">
+    <summary>Targets and WhatsApp settings</summary>
+    <div class="controls" style="margin-top: 12px">
       <span class="group-title">Daily targets per person</span>
       <label>Protein (g)
         <input type="number" id="t-protein" min="30" max="300" step="5" inputmode="numeric">
@@ -212,7 +235,30 @@
         <input type="number" id="t-dinner" min="300" max="2000" step="50" inputmode="numeric">
       </label>
     </div>
-  </div>
+    <div class="controls">
+      <span class="group-title">Where the Send buttons go</span>
+      <label>Send to
+        <select id="send-mode">
+          <option value="choose">Any chat or group (pick in WhatsApp)</option>
+          <option value="number">A saved number</option>
+          <option value="group">A saved WhatsApp group</option>
+        </select>
+      </label>
+      <label id="phone-field">WhatsApp number
+        <input type="tel" id="phone" placeholder="e.g. 919876543210">
+        <small class="field-hint" id="phone-hint"></small>
+      </label>
+      <label id="group-field">Group invite link
+        <input type="url" id="group-link" placeholder="https://chat.whatsapp.com/…">
+        <small class="field-hint" id="group-hint"></small>
+      </label>
+      <label class="check"><input type="checkbox" id="meal-ing"> Add ingredient quantities to each meal's message</label>
+    </div>
+    <p class="hint">Any chat or group: WhatsApp opens its chat list with the message ready, so you can pick a person or a group.
+      Saved number: the message goes straight to that chat. Saved group: WhatsApp cannot pre-fill a message into a group from a link,
+      so the app copies the message and opens the group, and you paste and send. To get the link, open the group in WhatsApp,
+      tap the group name, then Invite to group via link, then Copy link.</p>
+  </details>
 
   <section>
     <h2>Today's nutrition <small>per person</small></h2>
@@ -220,7 +266,7 @@
       <div id="targets"></div>
       <p class="hint" id="fat-sources"></p>
       <p class="hint">Estimates from standard food tables, using raw weights. Cooking oil is not counted.
-        Use 1–2 tsp of mustard or groundnut oil per meal. No maida: rotis and parathas use whole-wheat, multigrain, jowar or besan flour.</p>
+        Use 1–2 tsp of mustard or groundnut oil per meal. Gluten-free and no maida: rotis use jowar, bajra, ragi, makki, besan or rajgira flour.</p>
     </div>
   </section>
 
@@ -255,7 +301,7 @@
         <button class="btn" type="submit">Add</button>
       </form>
       <p class="hint">Tick what you already have at home. Ticked items are left out of the WhatsApp order.
-        Salt and cooking oil are assumed to be at home. Spices for teas and chutneys are listed, so tick the ones you already have.</p>
+        A spice pack you tick stays ticked on every day. Salt and cooking oil are assumed to be at home.</p>
     </div>
   </section>
 
@@ -263,16 +309,17 @@
     <h2>Send on WhatsApp</h2>
     <div class="card">
       <div class="share">
-        <a class="btn wa" id="wa-menu" target="_blank" rel="noopener">Send menu</a>
-        <a class="btn wa" id="wa-order" target="_blank" rel="noopener">Send order list</a>
-        <a class="btn wa" id="wa-both" target="_blank" rel="noopener">Send both</a>
+        <a class="btn wa" id="wa-menu" data-send="1" target="_blank" rel="noopener">Send menu</a>
+        <a class="btn wa" id="wa-order" data-send="1" target="_blank" rel="noopener">Send order list</a>
+        <a class="btn wa" id="wa-both" data-send="1" target="_blank" rel="noopener">Send both</a>
       </div>
       <pre id="preview"></pre>
       <button class="btn" id="copy">Copy text</button>
-      <p class="hint">Leave the number empty to choose a contact in WhatsApp. To always send to the same person,
-        enter their number with the country code and no + (for example 91 then the 10-digit number).</p>
+      <p class="hint">Each meal card above also has its own Send button. Change where messages go, including to a group,
+        in Targets and WhatsApp settings near the top.</p>
     </div>
   </section>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 </main>
 <script src="recipes.js"></script>
 <script src="superfoods.js"></script>

@@ -23,7 +23,13 @@ Open `index.html` in any browser (phone or desktop). No install or server needed
 - **Nutrition targets**: the planner picks the combination that gives each person at least **150 g protein**, **30 g fibre** and **20 g good fats** (nuts, seeds, fish), and stays under a calorie limit (2,800 kcal by default). You can change these.
 - **Menu**: each day gets its own plan and avoids yesterday's dishes. **Shuffle** swaps one dish for another that keeps the day on target. **New plan** redoes the whole day. You can also pick any dish from its dropdown.
 - **Items to order**: ingredients from every dish, combined and grouped by category. Tick the ones you already have, or add extra items.
-- **WhatsApp**: send the menu, the order list or both. Leave the number empty to pick a contact, or save a number with the country code (for example `919876543210`).
+- **WhatsApp**: every meal card has its own **Send** button, and the top of the page has **Send day's menu** and **Send order list**. Tap **Change** on a meal to open its dropdowns; the card otherwise shows a short summary.
+- **Sending to a group**: in *Targets and WhatsApp settings*, choose where the buttons go.
+  - *Any chat or group*: WhatsApp opens its chat list with the message ready, so you can pick a person or a group.
+  - *A saved number*: the message goes straight to that chat. Use the country code, for example `919876543210`.
+  - *A saved WhatsApp group*: paste the group's invite link (group info, then Invite to group via link). WhatsApp cannot pre-fill a message into a group from a link, so the app copies the message and opens the group; paste it and send.
+  - Optionally add ingredient quantities to each meal's message.
+- **Spice packs** you tick as at home stay ticked on every day.
 
 Your choices are saved in the browser.
 

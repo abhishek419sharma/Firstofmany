@@ -9,10 +9,14 @@ A small web app that suggests a full day of Indian meals, builds the list of ite
 - **No red chilli**: masalas use black pepper, ajwain, garam masala and dhania-jeera. Fresh green chilli is small and optional.
 - **No soya** anywhere in the menu.
 - **Buttermilk and flax every day**: lunch always includes chaas with ground flax (alsi).
+- **In season**: raw mango, jamun, melons, plums and peaches appear only in summer, and fresh amla and sarson only in winter.
 - **Breakfast always has** 4 egg whites + 1 yolk and a collagen protein shake.
 - **Chicken and fish only as a dry side** (tikka, seekh kebab, lemon-pepper fish), never in gravy or as the main dish. Egg curry is allowed.
 - **Light dinner**: no dal or legumes (dals, rajma, chana, sprouts, besan), a smaller roti, rich or heavy dishes kept to lunch, and a dinner calorie limit (650 kcal by default).
 - **Bowel-friendly**: the planner favours fibre-rich fruit, flax and chia, soaked anjeer, greens and dahi.
+
+## What is on the menu
+Over 250 dishes across the day, from Kerala thorans and avial, Bengali lau ghonto and shukto, Gujarati and Maharashtrian dals and chutneys, to steamed patra ni machhi, millet pulaos and upmas, regional raitas and pachadis. Every dish follows the house rules above.
 
 ## Use it
 Open `index.html` in any browser (phone or desktop). No install or server needed.

@@ -127,14 +127,22 @@ function allowedDiets(diet) {
   return ["veg", "egg", "nonveg"];
 }
 
-// Dishes a slot may use: its pool, for the chosen diet, and no legumes at dinner.
+// Seasonal dishes only appear in their months. This follows the date being planned
+// or viewed: getDay() and planDay() set it first.
+let planMonth = new Date().getMonth() + 1;
+function setViewDate(date) {
+  const m = Number(String(date).slice(5, 7));
+  if (m >= 1 && m <= 12) planMonth = m;
+}
+
+// Dishes a slot may use: its pool, for the chosen diet, in season, and no legumes at dinner.
 function slotCandidates(slot) {
   return candidates(slot.pool).filter((r) => !(slot.noLegumes && r.legume));
 }
 
 function candidates(pool) {
   const ok = allowedDiets(state.settings.diet);
-  return RECIPES[pool].filter((r) => ok.includes(r.diet));
+  return RECIPES[pool].filter((r) => ok.includes(r.diet) && (!r.months || r.months.includes(planMonth)));
 }
 
 function findRecipe(pool, id) {
@@ -275,12 +283,13 @@ function makeJitter(rand) {
 
 // Build a full day: random starts, then improve one slot at a time.
 function planDay(date, rand) {
+  setViewDate(date);
   const ctx = dayContext(date);
   const jitter = makeJitter(rand);
   const pools = SLOTS.map((s) => slotCandidates(s));
   let best = null;
   let bestScore = Infinity;
-  for (let start = 0; start < 24; start++) {
+  for (let start = 0; start < 14; start++) {
     let plan = pools.map((list) => list[Math.floor(rand() * list.length)]);
     let current = score(plan, ctx, jitter);
     for (let pass = 0; pass < 6; pass++) {
@@ -309,6 +318,7 @@ function planDay(date, rand) {
 // Get (and plan if needed) the day. A new day's first plan is the same
 // every time you open it, until you shuffle.
 function getDay(date) {
+  setViewDate(date);
   const day = state.days[date];
   const valid = day && day.diet === state.settings.diet && SLOTS.every((s) => {
     const r = findRecipe(s.pool, day[s.key]);

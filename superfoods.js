@@ -96,6 +96,38 @@ const SUPERFOODS = {
   "Curry leaves": { group: "Herbs & spices", kind: "traditional",
     why: "Aromatic leaves used daily in South Indian cooking." },
 
+  // Added in the recipe expansion
+  "Horse gram (kulthi)": { group: "Grains, millets & pulses", kind: "fact",
+    why: "About 22 g protein per 100 g dry, among the higher-protein pulses. A traditional food in Uttarakhand, Karnataka and Tamil Nadu." },
+  "Barnyard millet (samak)": { group: "Grains, millets & pulses", kind: "fact",
+    why: "Gluten-free millet with about 10 g fibre per 100 g. Eaten as samak rice on fasting days." },
+  "Kodo millet": { group: "Grains, millets & pulses", kind: "fact",
+    why: "Gluten-free millet with about 9 g fibre per 100 g." },
+  "Little millet (kutki)": { group: "Grains, millets & pulses", kind: "fact",
+    why: "Gluten-free millet with about 8 g fibre per 100 g." },
+  "Buckwheat flour (kuttu)": { group: "Grains, millets & pulses", kind: "fact",
+    why: "Gluten-free despite the name, with about 12 g protein and 10 g fibre per 100 g. A fasting-day flour." },
+  "Poppy seeds (khus khus)": { group: "Nuts & seeds", kind: "fact",
+    why: "Unsaturated fats, calcium and fibre. Ground to a paste in Bengali posto dishes." },
+  "Beet greens (beetroot leaves)": { group: "Greens & vegetables", kind: "fact",
+    why: "The leaves of beetroot, rich in iron and vitamin K, and often thrown away." },
+  "Malabar spinach (pui shak)": { group: "Greens & vegetables", kind: "fact",
+    why: "A vine spinach eaten across Bengal and Kerala, low in calories with vitamins A and C." },
+  "Dill leaves (suva)": { group: "Greens & vegetables", kind: "traditional",
+    why: "Aromatic leaves used in Gujarati and Maharashtrian suva bhaji, traditionally for digestion." },
+  "Raw mango": { group: "Fruits", kind: "fact",
+    why: "Vitamin C, and its tang replaces salt and sugar in chutneys. In season in summer." },
+  "Pineapple": { group: "Fruits", kind: "fact",
+    why: "Vitamin C and the enzyme bromelain." },
+  "Watermelon": { group: "Fruits", kind: "fact",
+    why: "About 90% water, so it helps hydration, and it contains lycopene." },
+  "Jamun": { group: "Fruits", kind: "traditional",
+    why: "A tart seasonal Indian fruit, traditionally eaten for digestion." },
+  "Plum (aloo bukhara)": { group: "Fruits", kind: "fact",
+    why: "Fibre, plus sorbitol, a fruit sugar alcohol that can help loosen stools." },
+  "Kalonji (nigella seeds)": { group: "Herbs & spices", kind: "traditional",
+    why: "Used in Bengali panch phoron and pickle blends. Small studies exist, but the evidence is limited." },
+
   // Dairy
   "Dahi (curd)": { group: "Dairy", kind: "fact",
     why: "Protein and calcium, plus live cultures (probiotics) when fresh and not heat-treated. Churned with water, it becomes chaas (buttermilk)." },
@@ -118,7 +150,8 @@ const SUPERFOOD_NOTES = [
 // works best with plenty of water.
 const GUT_FRIENDLY = ["Papaya", "Guava", "Pear", "Apple", "Kiwi", "Orange / mosambi",
   "Flax seeds (alsi)", "Chia seeds", "Anjeer (dried fig)", "Spinach (palak)", "Methi leaves",
-  "Sweet potato (shakarkandi)", "Dahi (curd)", "Moong sprouts", "Amla (Indian gooseberry)"];
+  "Sweet potato (shakarkandi)", "Dahi (curd)", "Moong sprouts", "Amla (Indian gooseberry)",
+  "Plum (aloo bukhara)"];
 
 
 // Check every name exists, and tag each dish with the superfoods it contains.

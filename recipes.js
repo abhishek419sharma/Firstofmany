@@ -317,10 +317,6 @@ const RECIPES = {
       i("Dhania-jeera powder", 1, "pack")] },
     { id: "lobia", name: "Lobia (Black-eyed Pea) Masala", diet: "veg", ingredients: [
       i("Lobia (black-eyed peas)", 60), i("Onion", 40), i("Tomato", 60), i("Ginger", 5), i("Garlic", 5)] },
-    { id: "sambar", name: "Sambar (no red chilli)", diet: "veg", ingredients: [
-      i("Toor dal", 50), i("Carrot", 30), i("Bottle gourd (lauki)", 50), i("Tomato", 30), i("Onion", 30),
-      i("Dhania-jeera powder", 1, "pack"), i("Kali mirch (black pepper)", 1, "pack"),
-      i("Methi seeds", 1, "pack"), i("Curry leaves", 0.25, "bunch")] },
   ],
 
   sabzi: [

@@ -1,24 +1,26 @@
 // Daily Meal Planner — high-protein, high-fibre menus, shopping list and WhatsApp sharing.
 // Everything runs in the browser; choices are kept in localStorage.
 
-const STORAGE_KEY = "meal-planner:v2";
-const GOOD_FAT_TARGET = 20; // grams per person per day from nuts, seeds, olive oil, avocado, fish
+const STORAGE_KEY = "meal-planner:v3";
+const GOOD_FAT_TARGET = 20; // grams per person per day from nuts, seeds and fish
 
 // ---------- storage ----------
 
 function loadState() {
   let saved = null;
+  let old = null;
   try {
     saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    // Menus from the previous version used different dishes, so only keep its settings.
+    if (!saved) old = JSON.parse(localStorage.getItem("meal-planner:v2"));
   } catch (e) {
     saved = null;
   }
-  return {
-    settings: Object.assign(
-      { people: 1, diet: "veg", phone: "", protein: 150, fibre: 30, kcal: 2400, whey: true },
-      saved && saved.settings),
-    days: (saved && saved.days) || {},
-  };
+  const settings = Object.assign(
+    { people: 1, diet: "veg", phone: "", protein: 150, fibre: 30, kcal: 2400 },
+    (saved && saved.settings) || (old && old.settings));
+  delete settings.whey;
+  return { settings, days: (saved && saved.days) || {} };
 }
 
 function saveState() {
@@ -82,7 +84,7 @@ function allowedDiets(diet) {
 
 function candidates(pool) {
   const ok = allowedDiets(state.settings.diet);
-  return RECIPES[pool].filter((r) => ok.includes(r.diet) && (state.settings.whey || !r.usesWhey));
+  return RECIPES[pool].filter((r) => ok.includes(r.diet));
 }
 
 function findRecipe(pool, id) {
@@ -110,10 +112,10 @@ function score(plan, yesterday, jitter) {
   const s = state.settings;
   const t = totals(plan);
   let sc = 0;
-  sc += 4 * Math.max(0, s.protein - t.protein);
-  sc += 8 * Math.max(0, s.fibre - t.fibre);
-  sc += 6 * Math.max(0, GOOD_FAT_TARGET - t.goodFat);
-  sc += Math.max(0, t.kcal - s.kcal) / 4;
+  sc += 4 * Math.max(0, s.protein + 3 - t.protein); // small margin so rounding never shows a miss
+  sc += 8 * Math.max(0, s.fibre + 1 - t.fibre);
+  sc += 6 * Math.max(0, GOOD_FAT_TARGET + 1 - t.goodFat);
+  sc += Math.max(0, t.kcal - s.kcal) / 2;
   // Soft caps so the day doesn't overshoot by a lot.
   sc += 0.3 * Math.max(0, t.protein - (s.protein + 40));
   sc += 1 * Math.max(0, t.fibre - (s.fibre + 15));
@@ -143,7 +145,7 @@ function planDay(date, rand) {
   const pools = SLOTS.map((s) => candidates(s.pool));
   let best = null;
   let bestScore = Infinity;
-  for (let start = 0; start < 10; start++) {
+  for (let start = 0; start < 16; start++) {
     let plan = pools.map((list) => list[Math.floor(rand() * list.length)]);
     let current = score(plan, yesterday, jitter);
     for (let pass = 0; pass < 4; pass++) {
@@ -176,7 +178,7 @@ function getDay(date) {
   });
   if (valid) return day;
   const s = state.settings;
-  return planDay(date, rng(hash([date, s.diet, s.whey, s.protein, s.fibre, s.kcal].join("|"))));
+  return planDay(date, rng(hash([date, s.diet, s.protein, s.fibre, s.kcal].join("|"))));
 }
 
 function replanToday() {
@@ -438,7 +440,6 @@ function render() {
   $("#t-protein").value = s.protein;
   $("#t-fibre").value = s.fibre;
   $("#t-kcal").value = s.kcal;
-  $("#whey").checked = s.whey;
   renderTargets(day);
   renderMenu(day);
   renderList(day);
@@ -471,7 +472,6 @@ function init() {
   numberSetting("#t-fibre", "fibre", 10, 80, true);
   numberSetting("#t-kcal", "kcal", 1000, 5000, true);
   $("#diet").addEventListener("change", (e) => { state.settings.diet = e.target.value; render(); });
-  $("#whey").addEventListener("change", (e) => { state.settings.whey = e.target.checked; render(); });
   $("#phone").addEventListener("change", (e) => { state.settings.phone = e.target.value.trim(); render(); });
   $("#shuffle-all").addEventListener("click", replanToday);
   $("#extra-form").addEventListener("submit", (e) => {

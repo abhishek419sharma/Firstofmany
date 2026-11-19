@@ -103,6 +103,7 @@ const NUTRITION = {
   "Brinjal":            ["Vegetables", 1.4, 3, 0.2, 24],
   "Mushrooms":          ["Vegetables", 3.1, 1, 0.3, 22],
   "Radish (mooli)":     ["Vegetables", 0.7, 1.6, 0.1, 16],
+  "Lettuce":            ["Vegetables", 1.4, 1.3, 0.2, 15],
   "Drumstick pods (sahjan phali)": ["Vegetables", 2.1, 3.2, 0.2, 37],
   "Karela (bitter gourd)": ["Vegetables", 1, 2.8, 0.2, 17],
   "Sweet potato (shakarkandi)": ["Vegetables", 1.6, 3, 0.1, 86],
@@ -390,26 +391,22 @@ const RECIPES = {
       i("Methi leaves", 100), i("Green peas", 60), i("Onion", 30), i("Garlic", 5)] },
   ],
 
+  // Simple raw salads: carrot, tomato, cucumber (kheera), onion, beetroot, lettuce
+  // and lemon, every time. The variants differ in how it is cut and which
+  // vegetable leads, so lunch and dinner are not the same.
   salad: [
-    { id: "kachumber", name: "Cucumber-Tomato-Onion Kachumber", diet: "veg", ingredients: [
-      i("Cucumber", 100), i("Tomato", 80), i("Onion", 40), i("Lemon", 0.5, "pcs"),
-      i("Coriander", 0.25, "bunch")] },
-    { id: "sprouts-salad", name: "Moong Sprouts Salad", diet: "veg", ingredients: [
-      i("Moong sprouts", 100), i("Cucumber", 60), i("Tomato", 60), i("Onion", 30), i("Lemon", 0.5, "pcs")] },
-    { id: "kala-chana-salad", name: "Kala Chana & Pomegranate Salad", diet: "veg", ingredients: [
-      i("Kala chana", 30), i("Cucumber", 80), i("Onion", 30), i("Pomegranate", 40),
-      i("Roasted jeera powder", 1, "pack")] },
-    { id: "cabbage-koshimbir", name: "Cabbage-Carrot Koshimbir with Peanuts", diet: "veg", ingredients: [
-      i("Cabbage", 80), i("Carrot", 50), i("Peanuts", 20), i("Lemon", 0.5, "pcs")] },
-    { id: "beet-carrot-salad", name: "Beetroot-Carrot Salad with Til", diet: "veg", ingredients: [
-      i("Beetroot", 80), i("Carrot", 60), i("Sesame seeds (til)", 8), i("Lemon", 0.5, "pcs")] },
-    { id: "mooli-gajar-salad", name: "Mooli-Gajar Salad with Walnuts", diet: "veg", ingredients: [
-      i("Radish (mooli)", 80), i("Carrot", 60), i("Walnuts", 10), i("Lemon", 0.5, "pcs")] },
-    { id: "cucumber-seeds-salad", name: "Cucumber-Tomato Salad with Pumpkin Seeds", diet: "veg", ingredients: [
-      i("Cucumber", 100), i("Tomato", 60), i("Onion", 30), i("Pumpkin seeds", 15)] },
-    { id: "sprouts-carrot-alsi", name: "Sprouts-Carrot Salad with Alsi", diet: "veg", ingredients: [
-      i("Moong sprouts", 80), i("Carrot", 60), i("Cucumber", 60), i("Flax seeds (alsi)", 10),
-      i("Lemon", 0.5, "pcs")] },
+    { id: "salad-chopped", name: "Simple Salad: chopped", diet: "veg", ingredients: [
+      i("Carrot", 40), i("Tomato", 50), i("Cucumber", 80), i("Onion", 25), i("Beetroot", 40),
+      i("Lettuce", 40), i("Lemon", 0.5, "pcs")] },
+    { id: "salad-grated", name: "Simple Salad: grated carrot & beetroot", diet: "veg", ingredients: [
+      i("Carrot", 60), i("Beetroot", 60), i("Tomato", 40), i("Cucumber", 50), i("Onion", 20),
+      i("Lettuce", 30), i("Lemon", 0.5, "pcs")] },
+    { id: "salad-lettuce", name: "Simple Salad: lettuce & kheera crunch", diet: "veg", ingredients: [
+      i("Lettuce", 70), i("Cucumber", 100), i("Tomato", 40), i("Carrot", 30), i("Onion", 20),
+      i("Beetroot", 30), i("Lemon", 0.5, "pcs")] },
+    { id: "salad-kachumber", name: "Simple Salad: kachumber style", diet: "veg", ingredients: [
+      i("Cucumber", 80), i("Tomato", 80), i("Onion", 40), i("Carrot", 30), i("Beetroot", 30),
+      i("Lettuce", 30), i("Lemon", 0.5, "pcs")] },
   ],
 
   dahi: [

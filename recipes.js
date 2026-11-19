@@ -347,8 +347,6 @@ const RECIPES = {
     { id: "shakarkandi", name: "Shakarkandi (Sweet Potato) Sabzi", diet: "veg", ingredients: [
       i("Sweet potato (shakarkandi)", 150), i("Green peas", 40), i("Green chilli", 1, "pcs"),
       i("Coriander", 0.25, "bunch")] },
-    { id: "sprouts-sabzi", name: "Moong Sprouts Masala Sabzi", diet: "veg", ingredients: [
-      i("Moong sprouts", 120), i("Onion", 40), i("Tomato", 40), i("Ginger", 5), i("Green chilli", 1, "pcs")] },
     { id: "chana-palak", name: "Chana Palak Sabzi (dry)", diet: "veg", ingredients: [
       i("Kabuli chana", 30), i("Spinach (palak)", 150), i("Onion", 30), i("Garlic", 5)] },
     { id: "mushroom-matar", name: "Mushroom Matar", diet: "veg", ingredients: [

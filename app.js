@@ -4,7 +4,7 @@
 
 const STORAGE_KEY = "meal-planner:v6";
 const DEFAULT_KCAL = 2800;
-const DEFAULT_DINNER_KCAL = 750; // keep dinner light
+const DEFAULT_DINNER_KCAL = 650; // keep dinner light
 const GOOD_FAT_TARGET = 20; // grams per person per day from nuts, seeds and fish
 
 // How many dishes in one day may use the same main protein before the
@@ -60,9 +60,12 @@ function loadState() {
   const carried = Object.assign({}, old && old.settings);
   delete carried.whey;
   if (carried.kcal === 2400 || carried.kcal === 2600) delete carried.kcal; // old defaults
+  if (carried.dinnerKcal === 750) delete carried.dinnerKcal; // old default; dinner is lighter now
   const days = saved && saved.days && typeof saved.days === "object" ? saved.days : {};
   const pantry = saved && Array.isArray(saved.pantry) ? saved.pantry.filter((x) => typeof x === "string") : [];
-  return { settings: sanitizeSettings(Object.assign({}, carried, saved && saved.settings)), days, pantry };
+  const merged = Object.assign({}, carried, saved && saved.settings);
+  if (merged.dinnerKcal === 750) delete merged.dinnerKcal; // old default; dinner is lighter now
+  return { settings: sanitizeSettings(merged), days, pantry };
 }
 
 function saveState() {
@@ -124,6 +127,11 @@ function allowedDiets(diet) {
   return ["veg", "egg", "nonveg"];
 }
 
+// Dishes a slot may use: its pool, for the chosen diet, and no legumes at dinner.
+function slotCandidates(slot) {
+  return candidates(slot.pool).filter((r) => !(slot.noLegumes && r.legume));
+}
+
 function candidates(pool) {
   const ok = allowedDiets(state.settings.diet);
   return RECIPES[pool].filter((r) => ok.includes(r.diet));
@@ -140,7 +148,7 @@ function slotRecipe(day, slot) {
 // A slot is shown unless it only offers "No side". A slot with a single dish
 // (the haldi-nimbu tea) is shown as fixed.
 function slotVisible(slot) {
-  const c = candidates(slot.pool);
+  const c = slotCandidates(slot);
   return c.length > 1 || (c.length === 1 && c[0].id !== "none");
 }
 
@@ -158,6 +166,10 @@ PAIRS.push({
   b: SLOTS.findIndex((s) => s.key === "snackFruit"),
   hard: true,
 });
+// Dinner has no dal, so that pair does not exist.
+for (let i = PAIRS.length - 1; i >= 0; i--) {
+  if (PAIRS[i].a < 0 || PAIRS[i].b < 0) PAIRS.splice(i, 1);
+}
 
 // ---------- nutrition & planning ----------
 
@@ -265,7 +277,7 @@ function makeJitter(rand) {
 function planDay(date, rand) {
   const ctx = dayContext(date);
   const jitter = makeJitter(rand);
-  const pools = SLOTS.map((s) => candidates(s.pool));
+  const pools = SLOTS.map((s) => slotCandidates(s));
   let best = null;
   let bestScore = Infinity;
   for (let start = 0; start < 24; start++) {
@@ -300,7 +312,7 @@ function getDay(date) {
   const day = state.days[date];
   const valid = day && day.diet === state.settings.diet && SLOTS.every((s) => {
     const r = findRecipe(s.pool, day[s.key]);
-    return r && candidates(s.pool).includes(r);
+    return r && slotCandidates(s).includes(r);
   });
   if (valid) return day;
   const s = state.settings;
@@ -318,7 +330,7 @@ function shuffleSlot(slotIdx) {
   const day = getDay(currentDate);
   const ctx = dayContext(currentDate);
   const plan = SLOTS.map((s) => slotRecipe(day, s));
-  const options = candidates(SLOTS[slotIdx].pool)
+  const options = slotCandidates(SLOTS[slotIdx])
     .filter((r) => r.id !== plan[slotIdx].id)
     .map((r) => {
       const trial = plan.slice();
@@ -652,7 +664,7 @@ function rowSub(slot, r) {
 
 // A dropdown with the current dish plus a Shuffle button.
 function slotControls(day, slot, idx) {
-  const options = candidates(slot.pool);
+  const options = slotCandidates(slot);
   if (options.length === 1) {
     return el("div", { class: "fixed-dish" }, options[0].name);
   }
@@ -660,7 +672,7 @@ function slotControls(day, slot, idx) {
     id: `pick-${slot.key}`,
     "aria-label": `Choose ${slot.label}`,
     onchange: (e) => { day[slot.key] = e.target.value; saveState(); render(); },
-  }, candidates(slot.pool).map((r) => el("option", { value: r.id, selected: r.id === day[slot.key] }, r.name)));
+  }, options.map((r) => el("option", { value: r.id, selected: r.id === day[slot.key] }, r.name)));
   return el("div", { class: "meal-actions" },
     select,
     el("button", { class: "btn ghost", onclick: () => shuffleSlot(idx), title: "Suggest another dish that keeps the day on target" }, "Shuffle"));

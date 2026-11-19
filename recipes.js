@@ -13,7 +13,8 @@
 //   - Breakfast always has 4 egg whites + 1 yolk and a collagen protein shake.
 //   - Chicken and fish only ever appear as a dry SIDE, never in gravy or as the
 //     main course. Egg curry is allowed.
-//   - Dinner is lighter: smaller roti, and rich or heavy dishes are avoided.
+//   - Dinner is lighter: no dal or legumes, a smaller roti, and rich or heavy
+//     dishes are avoided.
 //
 // A day is built like this:
 //   On waking = digestive drink + soaked nuts & seeds
@@ -21,7 +22,8 @@
 //   Lunch  = dal + sabzi + saag + salad + dahi + chutney + roti/rice
 //            (+ optional side) + chaas with flax + haldi-nimbu tea
 //   Evening snack = snack + fruit
-//   Dinner = same parts as lunch, with a smaller roti
+//   Dinner = sabzi + saag + salad + dahi + chutney + a smaller roti/rice
+//            (+ optional side) + tea. No dal or legumes at dinner.
 //
 // Quantities are PER PERSON and get multiplied by the number of people.
 // Nutrition is calculated from the ingredients using NUTRITION below
@@ -541,6 +543,15 @@ const HEAVY_AT_NIGHT = ["rajma", "chole", "kala-chana", "lobia", "matar-paneer",
   "palak-paneer", "tandoori-chicken", "egg-curry", "bajra-roti-1", "makki-roti-1"];
 Object.values(RECIPES).flat().forEach((r) => { r.heavy = HEAVY_AT_NIGHT.includes(r.id); });
 
+// Dals, beans, chickpeas and their flours and sprouts. None of these are served
+// at dinner. Green peas and peanuts are treated as vegetables and nuts.
+const LEGUMES = ["Moong dal", "Green moong (whole)", "Toor dal", "Masoor dal", "Chana dal", "Rajma",
+  "Kabuli chana", "Kala chana", "Lobia (black-eyed peas)", "Roasted chana", "Sattu (chana)", "Besan",
+  "Moong sprouts"];
+Object.values(RECIPES).flat().forEach((r) => {
+  r.legume = r.ingredients.some((ing) => LEGUMES.includes(ing.name));
+});
+
 // The day's slots, in serving order. "pool" says which list a slot picks
 // from; "group" is the meal it belongs to; "part" is its role in a thali.
 const MEAL_GROUPS = [
@@ -570,15 +581,14 @@ const SLOTS = [
   { key: "lunchTea",       group: "lunch",     part: "tea",     label: "Tea",                   pool: "tea" },
   { key: "snack",          group: "snack",     part: "main",    label: "Snack",                 pool: "snack" },
   { key: "snackFruit",     group: "snack",     part: "fruit",   label: "Fruit",                 pool: "fruit" },
-  { key: "dinnerDal",      group: "dinner",    part: "dal",     label: "Dal",                   pool: "dal" },
-  { key: "dinnerSabzi",    group: "dinner",    part: "sabzi",   label: "Sabzi",                 pool: "sabzi" },
-  { key: "dinnerSaag",     group: "dinner",    part: "saag",    label: "Saag / greens",         pool: "saag" },
-  { key: "dinnerSalad",    group: "dinner",    part: "salad",   label: "Salad",                 pool: "salad" },
-  { key: "dinnerDahi",     group: "dinner",    part: "dahi",    label: "Dahi / raita",          pool: "dahi" },
-  { key: "dinnerChutney",  group: "dinner",    part: "chutney", label: "Chutney",               pool: "chutney" },
-  { key: "dinnerStaple",   group: "dinner",    part: "staple",  label: "Roti / rice (smaller)", pool: "stapleLight" },
-  { key: "dinnerSide",     group: "dinner",    part: "side",    label: "Chicken / fish / egg side", pool: "side" },
-  { key: "dinnerTea",      group: "dinner",    part: "tea",     label: "Tea",                   pool: "tea" },
+  { key: "dinnerSabzi",    group: "dinner", noLegumes: true,    part: "sabzi",   label: "Sabzi",                 pool: "sabzi" },
+  { key: "dinnerSaag",     group: "dinner", noLegumes: true,    part: "saag",    label: "Saag / greens",         pool: "saag" },
+  { key: "dinnerSalad",    group: "dinner", noLegumes: true,    part: "salad",   label: "Salad",                 pool: "salad" },
+  { key: "dinnerDahi",     group: "dinner", noLegumes: true,    part: "dahi",    label: "Dahi / raita",          pool: "dahi" },
+  { key: "dinnerChutney",  group: "dinner", noLegumes: true,    part: "chutney", label: "Chutney",               pool: "chutney" },
+  { key: "dinnerStaple",   group: "dinner", noLegumes: true,    part: "staple",  label: "Roti / rice (smaller)", pool: "stapleLight" },
+  { key: "dinnerSide",     group: "dinner", noLegumes: true,    part: "side",    label: "Chicken / fish / egg side", pool: "side" },
+  { key: "dinnerTea",      group: "dinner", noLegumes: true,    part: "tea",     label: "Tea",                   pool: "tea" },
 ];
 
 // Used to stop one protein from showing up too often in a day.

@@ -7,6 +7,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Inter:wght@400;600;700&display=swap">
   <meta name="theme-color" content="#1f7a4d">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Meal Planner">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <style>
     /* Layout: one narrow column — settings, three meal cards, order checklist, share panel. */
     :root {
@@ -130,6 +138,7 @@
     .sf-in { font-size: .8rem; color: var(--muted); margin-top: 2px; }
     ul.hint-list { margin: 14px 0 0; padding-left: 18px; color: var(--muted); font-size: .85rem; }
     ul.hint-list li + li { margin-top: 6px; }
+    .install { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); font-size: .9rem; color: var(--muted); }
     .fixed-dish { padding: 9px 10px; min-height: 40px; border: 1px dashed var(--line); border-radius: 10px; font-weight: 600; background: var(--bg); }
     details.rules { margin-bottom: 0; }
     details.rules > summary { font-weight: 600; }
@@ -219,6 +228,10 @@
       <a class="btn wa" id="top-order" data-send="1" target="_blank" rel="noopener">Send order list</a>
     </div>
     <p class="hint" id="send-target" style="margin-bottom: 0"></p>
+    <div class="install" id="install-row" hidden>
+      <span id="install-text">Install this planner as an app on your phone.</span>
+      <button class="btn sm" id="install-btn" type="button" hidden>Install app</button>
+    </div>
   </div>
 
   <details class="card settings" style="margin-top: 14px">
@@ -327,5 +340,13 @@
 <script src="recipes.js"></script>
 <script src="superfoods.js"></script>
 <script src="app.js"></script>
+<script>
+  // Offline support. Only on a real website, never in a preview.
+  if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("sw.js").catch(function () {});
+    });
+  }
+</script>
 </body>
 </html>

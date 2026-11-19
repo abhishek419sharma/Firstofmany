@@ -955,4 +955,38 @@ function init() {
   render();
 }
 
-document.addEventListener("DOMContentLoaded", init);
+// ---------- install as an app ----------
+
+let installEvent = null;
+
+function isInstalled() {
+  return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+}
+
+function setupInstall() {
+  const row = $("#install-row");
+  const btn = $("#install-btn");
+  // Only offer this when the page is a real installable site (it has a manifest).
+  if (!row || !document.querySelector('link[rel="manifest"]') || isInstalled()) return;
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    installEvent = e;
+    row.hidden = false;
+    btn.hidden = false;
+  });
+  window.addEventListener("appinstalled", () => { row.hidden = true; installEvent = null; });
+  btn.addEventListener("click", async () => {
+    if (!installEvent) return;
+    installEvent.prompt();
+    await installEvent.userChoice;
+    installEvent = null;
+    row.hidden = true;
+  });
+  // iPhone and iPad never fire the prompt, so show the steps instead.
+  if (/iphone|ipad|ipod/i.test(navigator.userAgent)) {
+    $("#install-text").textContent = "To install on iPhone: tap the Share button, then Add to Home Screen.";
+    row.hidden = false;
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => { init(); setupInstall(); });

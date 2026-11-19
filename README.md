@@ -37,5 +37,15 @@ Open `index.html` in any browser (phone or desktop). No install or server needed
 
 Your choices are saved in the browser.
 
+## Install it as an app
+The planner is an installable web app (a PWA): it has an icon, opens full screen and works offline.
+
+1. Put it on a website. The simplest way is GitHub Pages: in the repository, go to **Settings, Pages**, set **Source** to *Deploy from a branch*, pick the branch (and the `/ (root)` folder), and save. After a minute the site is at `https://<your-user>.github.io/Firstofmany/`. Pages is free for public repositories.
+2. Open that address on your phone.
+3. **Android (Chrome):** tap **Install app** on the page, or the browser menu, then **Install app**.
+4. **iPhone (Safari):** tap **Share**, then **Add to Home Screen**.
+
+Your settings and ticked items are stored on that phone, in the browser or app you used. When you change the code, bump `VERSION` in `sw.js` so installed copies pick up the new files.
+
 ## Add your own dishes
 Edit `recipes.js` for dishes and `superfoods.js` for the superfood notes. Each dish lists its ingredients for one person. Nutrition is calculated from the ingredient table at the top of the file, which holds values per 100 g from standard food tables. These are estimates. Cooking oil and ghee are not counted.

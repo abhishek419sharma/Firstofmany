@@ -232,12 +232,12 @@ function renderMenu(day) {
 
     wrap.append(el("article", { class: "meal" },
       el("div", { class: "meal-head" },
-        el("span", { class: "meal-label" }, `${emoji} ${label}`),
+        el("span", { class: "meal-label" }, label),
         el("span", { class: `badge ${recipe.diet}` }, DIET_BADGE[recipe.diet])),
       el("h3", {}, recipe.name),
       el("div", { class: "meal-actions" },
         select,
-        el("button", { class: "btn ghost", onclick: () => shuffleMeal(key), title: "Suggest another" }, "🔀 Shuffle")),
+        el("button", { class: "btn ghost", onclick: () => shuffleMeal(key), title: "Suggest another" }, "Shuffle")),
       el("details", {},
         el("summary", {}, "Ingredients"),
         el("ul", { class: "ing" }, recipe.ingredients.map((ing) =>
@@ -330,7 +330,13 @@ function init() {
       await navigator.clipboard.writeText($("#preview").textContent);
       $("#copy").textContent = "Copied ✓";
     } catch (e) {
-      $("#copy").textContent = "Copy failed";
+      // Clipboard blocked: select the text so it can be copied by hand.
+      const range = document.createRange();
+      range.selectNodeContents($("#preview"));
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      $("#copy").textContent = "Text selected – copy it";
     }
     setTimeout(() => ($("#copy").textContent = "Copy text"), 1500);
   });

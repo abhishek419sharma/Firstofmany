@@ -4,27 +4,43 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Daily Meal Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Inter:wght@400;600;700&display=swap">
   <meta name="theme-color" content="#1f7a4d">
   <style>
+    /* Layout: one narrow column — settings, three meal cards, order checklist, share panel. */
     :root {
-      --bg: #f6f5f1; --card: #ffffff; --text: #1d1d1b; --muted: #6b6b66;
-      --line: #e4e2db; --accent: #1f7a4d; --accent-soft: #e3f1e9;
+      --bg: #f4f6f2; --card: #ffffff; --text: #1b211d; --muted: #646d66;
+      --line: #dfe4dd; --accent: #1f7a4d; --accent-soft: #e2f0e7;
       --wa: #25d366; --wa-text: #0b3d22;
-      --veg: #2e8b57; --egg: #c58b00; --nonveg: #b8412c;
+      --veg: #2e8b57; --egg: #a87500; --nonveg: #b8412c;
+      --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+      --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     }
     @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #151614; --card: #1f201d; --text: #ecebe6; --muted: #a3a29b;
-        --line: #33342f; --accent: #5cc48e; --accent-soft: #23362b;
-        --wa-text: #062514;
+      :root:not([data-theme="light"]) {
+        --bg: #131714; --card: #1c211d; --text: #e9ede9; --muted: #9ea69f;
+        --line: #2f3630; --accent: #5cc48e; --accent-soft: #213428;
+        --veg: #5cc48e; --egg: #e0b040; --nonveg: #ef7a62; color-scheme: dark;
       }
+    }
+    :root[data-theme="dark"] {
+      --bg: #131714; --card: #1c211d; --text: #e9ede9; --muted: #9ea69f;
+      --line: #2f3630; --accent: #5cc48e; --accent-soft: #213428;
+      --veg: #5cc48e; --egg: #e0b040; --nonveg: #ef7a62; color-scheme: dark;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0; background: var(--bg); color: var(--text);
-      font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      font: 16px/1.45 var(--font-body);
     }
-    main { max-width: 760px; margin: 0 auto; padding: 16px 16px 48px; }
+    main {
+      max-width: 760px; margin: 0 auto; padding-block: 16px 48px;
+      padding-left: max(16px, env(safe-area-inset-left, 0px));
+      padding-right: max(16px, env(safe-area-inset-right, 0px));
+    }
+    h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     header h1 { margin: 8px 0 2px; font-size: 1.5rem; }
     header p { margin: 0 0 16px; color: var(--muted); }
     section { margin-top: 24px; }
@@ -90,7 +106,7 @@
 <body>
 <main>
   <header>
-    <h1>🍽️ Daily Meal Planner</h1>
+    <h1>Daily Meal Planner</h1>
     <p>Get a breakfast, lunch and dinner menu, see what to buy, and send both on WhatsApp.</p>
   </header>
 
@@ -119,7 +135,7 @@
   </div>
 
   <section>
-    <h2>Menu <button class="btn ghost" id="shuffle-all">🔀 Shuffle all</button></h2>
+    <h2>Menu <button class="btn ghost" id="shuffle-all">Shuffle all</button></h2>
     <div id="menu"></div>
   </section>
 
